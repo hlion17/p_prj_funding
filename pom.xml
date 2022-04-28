@@ -18,6 +18,23 @@
 	</properties>
 	<dependencies>
 
+		<!-- spring boot 의 내장 톰켓은 jsp 엔진을 포함하지 않아서 의존성 추가 -->
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- jstl 라이브러리 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<!-- 동적으로 파일 변화를 반영해주기 위한 라이브러리 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
 		<!-- ojdbc8 -->
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
