@@ -26,10 +26,9 @@ public class DatabaseConfig {
         // DTO 에 @Alias 를 붙혀 typeAlias 설정을 가능하게 해주는 설정
 //        sessionFactory.setTypeAliasesPackage("me.project.funding.dto");
 
-
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         // mybatis-config 설정
-//        sessionFactory.setConfigLocation(resolver.getResource("classpath:mybatis-config.xml"));
+        sessionFactory.setConfigLocation(resolver.getResource("classpath:mybatis-config.xml"));
         // Mapper.xml 위치 설정 - 여기서 설정하면 작동 안함
         // application.properties 에서 설정
         // 왜 *Mapper.xml 을 못찾는걸까

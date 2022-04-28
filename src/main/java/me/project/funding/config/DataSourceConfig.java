@@ -14,8 +14,8 @@ public class DataSourceConfig {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("oracle.jdbc.driver.OracleDriver");
         dataSourceBuilder.url("jdbc:oracle:thin:@localhost:1521:xe");
-        dataSourceBuilder.username("scott");
-        dataSourceBuilder.password("tiger");
+        dataSourceBuilder.username("kh5test");
+        dataSourceBuilder.password("1234");
         return dataSourceBuilder.build();
     }
 }
