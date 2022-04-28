@@ -5,8 +5,8 @@
 
 <mapper namespace="me.project.funding.mapper.MemberMapper">
 
-    <select id="test" resultType="MemberDTO" parameterType="map">
-        select * from emp;
+    <select id="test" resultType="me.project.funding.dto.MemberDTO" parameterType="string">
+        select * from emp where ename = #{id}
     </select>
 
 </mapper>
