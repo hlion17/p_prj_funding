@@ -5,4 +5,8 @@
 
 <mapper namespace="me.project.funding.mapper.MemberMapper">
 
+    <select id="test" resultType="MemberDTO" parameterType="map">
+        select * from emp;
+    </select>
+
 </mapper>
