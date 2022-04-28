@@ -2,6 +2,7 @@ package me.project.funding.unitTest.controller;
 
 import me.project.funding.controller.MemberController;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,19 +33,20 @@ public class MemberControllerTest {
     }
 
     @Test
-    void 접속테스트() throws Exception {
+    @DisplayName("회원가입 페이지")
+    void signUp() throws Exception {
         // given
         RequestBuilder request = MockMvcRequestBuilders
-                .get("/test");
+                .get("/member/join");
 
         // when
         ResultActions result = this.mockMvc.perform(request);
 
         // then
-        result.andDo(print())
-                .andExpectAll(
-                        status().isOk()
-                        , view().name("test/go")
-                );
+        result.andExpectAll(
+                status().isOk()
+                , view().name("member/join")
+        );
+
     }
 }

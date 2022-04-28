@@ -25,4 +25,10 @@ public class MemberController {
 
         return mav;
     }
+
+    @GetMapping("/member/join")
+    public ModelAndView join() {
+        return new ModelAndView("member/join");
+    }
+
 }
