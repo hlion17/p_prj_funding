@@ -22,7 +22,7 @@ public class MemberMapperTest {
 
     @Test
     @DisplayName("회원가입 확인")
-    void save(@Mock MemberDTO memberMock) {
+    void save() {
         // given
         MemberDTO member = new MemberDTO();
         member.setId("testId");
@@ -69,7 +69,7 @@ public class MemberMapperTest {
         // given
         MemberDTO member = new MemberDTO();
         member.setId("testId");
-        member.setPw("testPw");
+        member.setPw(SHA256Util.encryptionSHA256("testPw"));
         member.setNick("testNick");
         member.setName("testName");
         member.setEmail("test@test.com");
@@ -82,11 +82,11 @@ public class MemberMapperTest {
 
         // then
         assertEquals(foundMember.getId(), member.getId());
-        assertEquals(foundMember.getPw(), SHA256Util.encryptionSHA256(member.getPw()));
+        assertEquals(foundMember.getPw(), SHA256Util.encryptionSHA256("testPw"));
         assertEquals(foundMember.getNick(), member.getNick());
         assertEquals(foundMember.getName(), member.getName());
         assertEquals(foundMember.getEmail(), member.getEmail());
         assertEquals(foundMember.getGrade(), member.getGrade());
-
     }
+
 }

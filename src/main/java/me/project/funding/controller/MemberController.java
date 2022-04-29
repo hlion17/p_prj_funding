@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @Slf4j
@@ -42,10 +43,31 @@ public class MemberController {
     }
 
     @PostMapping("/member/login")
-    public String loginProcess() {
+    public ModelAndView loginProcess(MemberDTO member, HttpSession session) {
         log.info("[/member/login][POST]");
 
-        return null;
+        ModelAndView mav = new ModelAndView("jsonView");
+        Map<String, Object> model = mav.getModel();
+
+        MemberDTO result = memberService.login(member);
+
+        if (result == null) {
+            model.put("result", -1);
+            model.put("msg", "로그인 실패");
+        } else if (result.getGrade() == 3) {
+            model.put("result", -1);
+            model.put("msg", "탈퇴한 회원 입니다.");
+        } else {
+            // 모든 이외(else) 상황을 로그인 성공으로 처리해도 되는 것인가
+            // 예상하지 못한 결과에도 로그인 성공 처리하는 것은 아닌지
+            // login service 에서 로그인 성공시 status 값을 추가 하고
+            // status 값을 if 문으로 확인하는 방식 생각해보기
+            model.put("result", 1);
+            model.put("msg", "로그인 성공");
+            session.setAttribute("loginId", result.getId());
+        }
+        
+        return mav;
     }
 
 }

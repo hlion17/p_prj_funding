@@ -79,7 +79,7 @@
                 , success: function(res) {
                     if (res.result) {
                         alert("가입되셨습니다.")
-                        location.href = "/"
+                        location.href = "/member/login"
                     } else {
                         alert("회원가입에 실패했습니다.")
                     }

@@ -44,7 +44,26 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Override
+    public MemberDTO login(MemberDTO member) {
+        member.setPw(SHA256Util.encryptionSHA256(member.getPw()));
+        log.info("로그인 인증 요청 정보 - ID: {}, PW: {}", member.getId(), member.getPw());
 
+        MemberDTO result = memberMapper.findById(member);
+        log.info("조회결과: {}", result);
+
+        if (result == null) {
+            log.info("존재하지 않는 아이디");
+            return null;
+        } else if (!member.getPw().equals(result.getPw())) {
+            log.info("비밀번호 인증 실패");
+            return null;
+        } else {
+            log.info("로그인 인증 성공");
+            return member;
+        }
+
+    }
 
     // ID 중복체크
     public boolean isDuplicatedId(String id) {

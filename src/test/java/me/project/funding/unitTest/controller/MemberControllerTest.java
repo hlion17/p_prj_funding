@@ -107,7 +107,7 @@ public class MemberControllerTest {
                 .param("id", "testId")
                 .param("pw", "testPw");
 
-        given(memberService).willReturn(any());
+        given(memberService.login(any())).willReturn(any());
 
         // when
         ResultActions result = this.mockMvc.perform(request);
@@ -121,4 +121,5 @@ public class MemberControllerTest {
                 );
 
     }
+
 }

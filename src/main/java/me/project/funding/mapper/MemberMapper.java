@@ -20,4 +20,11 @@ public interface MemberMapper {
      * @return 1 - 중복된 아이디 존재
      */
     int idCheck(String id);
+
+    /**
+     * 아이디로 회원 조회
+     * @param member 회원 아이디 정보가 담긴 DTO 객체
+     * @return 조회된 회원의 정보
+     */
+    MemberDTO findById(MemberDTO member);
 }

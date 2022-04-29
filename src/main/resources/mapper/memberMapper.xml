@@ -16,4 +16,10 @@
         where id = #{id}
     </select>
 
+    <select id="findById" resultType="me.project.funding.dto.MemberDTO" parameterType="me.project.funding.dto.MemberDTO">
+        select member_no, id, pw, name, email, nick, phone, grade
+        from member
+        where id = #{id}
+    </select>
+
 </mapper>

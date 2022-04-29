@@ -1,5 +1,6 @@
 package me.project.funding.unitTest.service;
 
+import me.project.funding.commons.SHA256Util;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.mapper.MemberMapper;
 import me.project.funding.service.face.MemberService;
@@ -76,10 +77,10 @@ public class MemberServiceTest {
 
         MemberDTO wrongMemberInfo = new MemberDTO();
         wrongMemberInfo.setId("testId");
-        wrongMemberInfo.setPw("wrongPw");
+        wrongMemberInfo.setPw(SHA256Util.encryptionSHA256("wrongPw"));
 
         // 아이디가 없는경우, 비밀번호가 틀린경우, 비밀번호 일치한 경우
-        given(memberMapper.findById(member.getId()))
+        given(memberMapper.findById(member))
                 .willReturn(isNull())
                 .willReturn(wrongMemberInfo)
                 .willReturn(member);
@@ -92,10 +93,12 @@ public class MemberServiceTest {
         // then
         assertNull(resultNoId);
 
-        assertEquals(resultWrongPw.getId(), member.getId());
-        assertNotEquals(resultWrongPw.getPw(), member.getPw());
+        assertNull(resultWrongPw);
 
         assertEquals(resultSuccess.getId(), member.getId());
         assertEquals(resultSuccess.getPw(), member.getPw());
+
+        verify(memberMapper, times(3)).findById(any());
     }
+
 }
