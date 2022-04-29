@@ -44,6 +44,8 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+
+
     // ID 중복체크
     public boolean isDuplicatedId(String id) {
         return memberMapper.idCheck(id) == 1;

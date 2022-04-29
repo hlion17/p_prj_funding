@@ -66,4 +66,36 @@ public class MemberServiceTest {
         // 해시 암호화 테스트를 따로 만들어줘서 해야하는 문제여서 상관없나?
     }
 
+    @Test
+    @DisplayName("로그인")
+    void login() {
+        // given
+        MemberDTO member = new MemberDTO();
+        member.setId("testId");
+        member.setPw("testPw");
+
+        MemberDTO wrongMemberInfo = new MemberDTO();
+        wrongMemberInfo.setId("testId");
+        wrongMemberInfo.setPw("wrongPw");
+
+        // 아이디가 없는경우, 비밀번호가 틀린경우, 비밀번호 일치한 경우
+        given(memberMapper.findById(member.getId()))
+                .willReturn(isNull())
+                .willReturn(wrongMemberInfo)
+                .willReturn(member);
+
+        // when
+        MemberDTO resultNoId = memberService.login(member);
+        MemberDTO resultWrongPw = memberService.login(member);
+        MemberDTO resultSuccess = memberService.login(member);
+
+        // then
+        assertNull(resultNoId);
+
+        assertEquals(resultWrongPw.getId(), member.getId());
+        assertNotEquals(resultWrongPw.getPw(), member.getPw());
+
+        assertEquals(resultSuccess.getId(), member.getId());
+        assertEquals(resultSuccess.getPw(), member.getPw());
+    }
 }

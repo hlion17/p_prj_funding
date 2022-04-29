@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.xml.transform.Result;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -77,5 +79,46 @@ public class MemberControllerTest {
                         status().isOk()
                         , model().attributeExists("result")
                 );
+    }
+
+    @Test
+    @DisplayName("로그인 페이지")
+    void loginPage() throws Exception {
+        // given
+        RequestBuilder request = MockMvcRequestBuilders.get("/member/login");
+
+        // when
+        ResultActions result = this.mockMvc.perform(request);
+
+        // then
+        result
+                .andExpectAll(
+                        status().isOk()
+                        , view().name("member/login")
+                );
+    }
+
+    @Test
+    @DisplayName("로그인")
+    void loginProcess() throws Exception {
+        // given
+        RequestBuilder request = MockMvcRequestBuilders
+                .post("/member/login")
+                .param("id", "testId")
+                .param("pw", "testPw");
+
+        given(memberService).willReturn(any());
+
+        // when
+        ResultActions result = this.mockMvc.perform(request);
+
+        // then
+        result
+                .andDo(print())
+                .andExpectAll(
+                        status().isOk()
+                        , model().attributeExists("result", "msg")
+                );
+
     }
 }

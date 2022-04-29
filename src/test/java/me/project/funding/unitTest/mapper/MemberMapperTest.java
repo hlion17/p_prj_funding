@@ -1,5 +1,6 @@
 package me.project.funding.unitTest.mapper;
 
+import me.project.funding.commons.SHA256Util;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.mapper.MemberMapper;
 import org.junit.jupiter.api.Assertions;
@@ -60,5 +61,32 @@ public class MemberMapperTest {
         // then
         assertEquals(1, resultExist);
         assertEquals(0, resultNonExist);
+    }
+
+    @Test
+    @DisplayName("아이디로 회원 찾기 테스트")
+    void findById() {
+        // given
+        MemberDTO member = new MemberDTO();
+        member.setId("testId");
+        member.setPw("testPw");
+        member.setNick("testNick");
+        member.setName("testName");
+        member.setEmail("test@test.com");
+        member.setGrade(1);
+
+        memberMapper.save(member);
+
+        // when
+        MemberDTO foundMember = memberMapper.findById(member);
+
+        // then
+        assertEquals(foundMember.getId(), member.getId());
+        assertEquals(foundMember.getPw(), SHA256Util.encryptionSHA256(member.getPw()));
+        assertEquals(foundMember.getNick(), member.getNick());
+        assertEquals(foundMember.getName(), member.getName());
+        assertEquals(foundMember.getEmail(), member.getEmail());
+        assertEquals(foundMember.getGrade(), member.getGrade());
+
     }
 }

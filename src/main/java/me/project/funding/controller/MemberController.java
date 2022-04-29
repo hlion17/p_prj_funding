@@ -35,4 +35,17 @@ public class MemberController {
         return mav;
     }
 
+    @GetMapping("/member/login")
+    public String login() {
+        log.info("[/member/login][GET]");
+        return "member/login";
+    }
+
+    @PostMapping("/member/login")
+    public String loginProcess() {
+        log.info("[/member/login][POST]");
+
+        return null;
+    }
+
 }
