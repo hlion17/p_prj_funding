@@ -33,6 +33,9 @@ public class MemberServiceTest {
         member.setId("testId");
         member.setPw("testPw");
         member.setNick("testNick");
+        member.setName("testName");
+        member.setEmail("test@test.com");
+        member.setGrade(1);
 
         // Mock 아이디 중복 체크
         given(memberMapper.idCheck(member.getId()))

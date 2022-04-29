@@ -5,10 +5,6 @@
 
 <mapper namespace="me.project.funding.mapper.MemberMapper">
 
-    <select id="test" resultType="me.project.funding.dto.MemberDTO" parameterType="string">
-        select * from member where ename = #{id}
-    </select>
-
     <insert id="save" parameterType="me.project.funding.dto.MemberDTO">
         insert into member (member_no, id, pw, name, email, nick, phone, grade)
         values (member_seq.nextval, #{id}, #{pw}, #{name}, #{email}, #{nick}, #{phone}, #{grade} )

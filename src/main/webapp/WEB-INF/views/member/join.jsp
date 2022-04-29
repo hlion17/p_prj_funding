@@ -58,11 +58,13 @@
         $("#btnJoin").click(function() {
             const id = $("input[name=id]").val()
             const pw = $("input[name=pw]").val()
+            const name = $("input[name=name]").val()
             const nick = $("input[name=nick]").val()
+            const email = $("input[name=email]").val()
             const grade = $("input[name=grade]:checked").val()
             const pwch = $("#pwch").val()
 
-            console.log({id: id, pw: pw, nick: nick, grade: grade, pwch: pwch})
+            console.log({id: id, pw: pw, name: name, email: email, nick: nick, grade: grade, pwch: pwch})
 
             if (!validateId(id)) return false
             if (!validatePw(pw, pwch)) return false
@@ -79,14 +81,28 @@
         <div class="row">
             <label for="id" class="col-4 col-form-label">아이디</label>
             <div class="col-8">
-                <input type="text" id="id" name="id">
+                <input type="text" id="id" name="id" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="name" class="col-4 col-form-label">이름</label>
+            <div class="col-8">
+                <input type="text" id="name" name="name" required>
             </div>
         </div>
 
         <div class="row my-3">
-            <label for="nick" class="col-4 col-form-label">닉네임</label>
+            <label for="nick" class="col-4 col-form-label" required>닉네임</label>
             <div class="col-8">
                 <input type="text" id="nick" name="nick">
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <label for="email" class="col-4 col-form-label" required>Email</label>
+            <div class="col-8">
+                <input type="email" id="email" name="email">
             </div>
         </div>
 

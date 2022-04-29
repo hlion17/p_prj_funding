@@ -7,8 +7,6 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface MemberMapper {
 
-    MemberDTO test(@Param("id") String id);
-
     /**
      * DB에 회원정보 삽입하여 회원가입
      * @param member 가입할 회원의 정보가 담긴 DTO

@@ -38,21 +38,11 @@ public class EncodingTest {
     @Test
     void 한글인코딩_테스트() throws Exception {
         // given
-        RequestBuilder request = MockMvcRequestBuilders
-                .get("/test")
-                .param("test", "한글");
 
-        when(memberMapper.test(any())).thenReturn(any());
 
         // when
-        ResultActions result = this.mockMvc.perform(request);
 
         // then
-        result.andDo(print())
-                .andExpectAll(
-                        status().isOk()
-                );
-
 
     }
 }

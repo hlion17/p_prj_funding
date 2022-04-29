@@ -3,7 +3,9 @@ package me.project.funding.unitTest.mapper;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.mapper.MemberMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +20,45 @@ public class MemberMapperTest {
     private MemberMapper memberMapper;
 
     @Test
-    void 매퍼작동테스트() {
-        MemberDTO member = memberMapper.test("tester");
+    @DisplayName("회원가입 확인")
+    void save(@Mock MemberDTO memberMock) {
+        // given
+        MemberDTO member = new MemberDTO();
+        member.setId("testId");
+        member.setPw("testPw");
+        member.setNick("testNick");
+        member.setName("testName");
+        member.setEmail("test@test.com");
+        member.setGrade(1);
 
-        assertEquals(9000, member.getId());
+        // when
+        int result = memberMapper.save(member);
+
+        // then
+        // 이렇게 테스트 하는거 아닌거 같음
+        // 나중에 findById 메서드 구현하면 확인
+        assertEquals(1, result);
+    }
+
+    @Test
+    @DisplayName("회원아이디 중복 확인")
+    void idCheck() {
+        // given
+        MemberDTO member = new MemberDTO();
+        member.setId("testId");
+        member.setPw("testPw");
+        member.setNick("testNick");
+        member.setName("testName");
+        member.setEmail("test@test.com");
+        member.setGrade(1);
+        memberMapper.save(member);
+
+        // when
+        int resultExist = memberMapper.idCheck("testId");
+        int resultNonExist = memberMapper.idCheck("nonExistId");
+
+        // then
+        assertEquals(1, resultExist);
+        assertEquals(0, resultNonExist);
     }
 }
