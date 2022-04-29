@@ -9,4 +9,15 @@
         select * from member where ename = #{id}
     </select>
 
+    <insert id="save" parameterType="me.project.funding.dto.MemberDTO">
+        insert into member (member_no, id, pw, name, email, nick, phone, grade)
+        values (member_seq.nextval, #{id}, #{pw}, #{name}, #{email}, #{nick}, #{phone}, #{grade} )
+    </insert>
+
+    <select id="idCheck" parameterType="string" resultType="int">
+        select count(*)
+        from member
+        where id = #{id}
+    </select>
+
 </mapper>
