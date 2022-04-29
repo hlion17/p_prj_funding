@@ -16,9 +16,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberControllerTest {
@@ -72,6 +71,11 @@ public class MemberControllerTest {
         ResultActions result = this.mockMvc.perform(request);
 
         // then
-        result.andDo(print());
+        result
+                //.andDo(print())
+                .andExpectAll(
+                        status().isOk()
+                        , model().attributeExists("result")
+                );
     }
 }
