@@ -6,12 +6,14 @@ import me.project.funding.dto.MemberDTO;
 import me.project.funding.mapper.MemberMapper;
 import me.project.funding.service.face.MemberService;
 import org.apache.ibatis.javassist.bytecode.DuplicateMemberException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 public class MemberServiceImpl implements MemberService {
 
+    @Autowired
     MemberMapper memberMapper;
 
     @Override

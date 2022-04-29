@@ -52,9 +52,9 @@
         return true
     }
 
-    // 검증
+
     $(document).ready(function() {
-        // 회원가입 정보 제출
+        // 폼데이터 검증 후 회원가입 정보 제출
         $("#btnJoin").click(function() {
             const id = $("input[name=id]").val()
             const pw = $("input[name=pw]").val()
@@ -64,14 +64,47 @@
             const grade = $("input[name=grade]:checked").val()
             const pwch = $("#pwch").val()
 
-            console.log({id: id, pw: pw, name: name, email: email, nick: nick, grade: grade, pwch: pwch})
-
             if (!validateId(id)) return false
             if (!validatePw(pw, pwch)) return false
             if (!emptyCheck(nick, "닉네임을")) return false
+            if (!emptyCheck(name, "이름을")) return false
+            if (!emptyCheck(email, "이메일을")) return false
 
-            sendDataByPost("/member/join", {id: id, pw: pw, nick: nick, grade: grade})
+            // sendDataByPost("/member/join", {id: id, pw: pw, nick: nick, grade: grade})
+            $.ajax({
+                type: "POST"
+                , url: "/member/join"
+                , dataType: "json"
+                , data: {id: id, pw: pw, name: name, nick: nick, email: email, grade: grade}
+                , success: function(res) {
+                    if (res.result) {
+                        alert("가입되셨습니다.")
+                        location.href = "/"
+                    } else {
+                        alert("회원가입에 실패했습니다.")
+                    }
+                }
+                , error: function(request, status, error) {
+                    alert("code: " + request.status + "\n"
+                        +"message: " + request.responseJSON.message);
+                }
+            })
         })
+        // 비밀번호 확인 html 메시지 출력
+        $("#pwch").keyup(function(){
+            let pw = $("input[name=pw]").val()
+            let pwch = $("#pwch").val()
+            let msg = $("#pw-chk-msg")
+
+            if (pw !== pwch) {
+                msg.text("비밀번호가 일치하지 않습니다.")
+                msg.css("color", "red")
+            } else {
+                msg.text("비밀번호가 일치")
+                msg.css("color", "green")
+            }
+        })
+
     })
 </script>
 
@@ -85,7 +118,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row my-3">
             <label for="name" class="col-4 col-form-label">이름</label>
             <div class="col-8">
                 <input type="text" id="name" name="name" required>
@@ -124,7 +157,7 @@
         <div class="row">
             <div class="col-4"></div>
             <div class="col-8">
-                <span style="color: red;">비밀번호 확인 메시지</span>
+                <span id="pw-chk-msg"></span>
             </div>
         </div>
 
