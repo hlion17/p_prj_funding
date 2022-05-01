@@ -2,6 +2,7 @@ package me.project.funding.unitTest.controller;
 
 import me.project.funding.controller.MemberController;
 import me.project.funding.service.face.MemberService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
@@ -120,6 +122,27 @@ public class MemberControllerTest {
                         , model().attributeExists("result", "msg")
                 );
 
+    }
+
+    @Test
+    @DisplayName("로그아웃")
+    void logout() throws Exception {
+        // given
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("loginId", "testId");
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/member/logout")
+                .session(session);
+
+        // when
+        ResultActions result = this.mockMvc.perform(request);
+
+        // then
+        result.andExpectAll(
+                redirectedUrl("/")
+        );
+        Assertions.assertTrue(session.isInvalid());
     }
 
 }

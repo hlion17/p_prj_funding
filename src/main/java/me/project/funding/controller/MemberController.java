@@ -70,4 +70,11 @@ public class MemberController {
         return mav;
     }
 
+    @GetMapping("/member/logout")
+    public String logout(HttpSession session) {
+        log.info("[/member/logout][GET]");
+
+        session.invalidate();
+        return "redirect:/";
+    }
 }
