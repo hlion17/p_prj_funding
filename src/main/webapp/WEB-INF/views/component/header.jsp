@@ -48,7 +48,7 @@
                         <a class="nav-link active" aria-current="page" href="#">프로젝트</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">채팅</a>
+                        <a class="nav-link" href="/chat/room">채팅</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
