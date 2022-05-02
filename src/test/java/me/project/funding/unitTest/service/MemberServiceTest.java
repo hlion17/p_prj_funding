@@ -101,4 +101,31 @@ public class MemberServiceTest {
         verify(memberMapper, times(3)).findById(any());
     }
 
+    @Test
+    @DisplayName("회원 상세 정보")
+    void getMemberDetail() {
+        // given
+        MemberDTO saveMember = new MemberDTO();
+        saveMember.setId("testId");
+        saveMember.setPw("testPw");
+        saveMember.setNick("testNick");
+        saveMember.setName("testName");
+        saveMember.setEmail("test@test.com");
+        saveMember.setGrade(1);
+
+        MemberDTO member = new MemberDTO();
+        member.setId("testId");
+
+        given(memberMapper.findById(member))
+                .willReturn(saveMember);
+
+        // when
+        MemberDTO actual = memberService.getDetail(member);
+
+        // then
+        assertEquals(actual.getId(), saveMember.getId());
+
+        verify(memberMapper, times(1)).findById(member);
+    }
+
 }

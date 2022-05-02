@@ -1,6 +1,7 @@
 package me.project.funding.unitTest.controller;
 
 import me.project.funding.controller.MemberController;
+import me.project.funding.dto.MemberDTO;
 import me.project.funding.service.face.MemberService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -143,6 +144,31 @@ public class MemberControllerTest {
                 redirectedUrl("/")
         );
         Assertions.assertTrue(session.isInvalid());
+    }
+
+    @Test
+    @DisplayName("회원상세 정보")
+    void getMemberDetail() throws Exception {
+        // given
+        MemberDTO member = new MemberDTO();
+        member.setMemberNo(1);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/member/detail")
+                .param("memberId", "testId");
+        given(memberService.getDetail(any()))
+                .willReturn(new MemberDTO());
+
+        // when
+        ResultActions result = this.mockMvc.perform(request);
+
+        // then
+        result.andExpectAll(
+                        status().isOk()
+                        , view().name("member/detail")
+                        , model().attributeExists("member")
+                )
+                .andDo(print());
     }
 
 }

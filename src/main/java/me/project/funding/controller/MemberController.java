@@ -77,4 +77,16 @@ public class MemberController {
         session.invalidate();
         return "redirect:/";
     }
+
+    @GetMapping("/member/detail")
+    public ModelAndView detail(MemberDTO member) {
+        log.info("[/member/detail][GET]");
+        log.info("요청 파라미터: {}", member);
+
+        ModelAndView mav = new ModelAndView("member/detail");
+        Map<String, Object> model = mav.getModel();
+
+        model.put("member", memberService.getDetail(member));
+        return mav;
+    }
 }

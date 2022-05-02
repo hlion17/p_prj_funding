@@ -16,4 +16,11 @@ public interface MemberService {
      * @return 인증된 회원 정보 반환
      */
     MemberDTO login(MemberDTO member);
+
+    /**
+     * 회원 상세정보
+     * @param member 조회할 회원의 번호
+     * @return 조회된 회원의 정보
+     */
+    MemberDTO getDetail(MemberDTO member);
 }
