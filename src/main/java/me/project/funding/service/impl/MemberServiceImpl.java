@@ -70,6 +70,20 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.findById(member);
     }
 
+    @Override
+    public MemberDTO editMemberInfo(MemberDTO member) {
+
+        int result = memberMapper.update(member);
+
+        if (result == 1) {
+            log.info("회원정보 업데이트 성공");
+            return memberMapper.findById(member);
+        } else {
+            log.error("회원정보 업데이트 실패");
+            throw new RuntimeException("회원정보 업데이트 실패");
+        }
+    }
+
     // ID 중복체크
     public boolean isDuplicatedId(String id) {
         return memberMapper.idCheck(id) == 1;

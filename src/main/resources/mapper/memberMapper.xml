@@ -6,8 +6,11 @@
 <mapper namespace="me.project.funding.mapper.MemberMapper">
 
     <insert id="save" parameterType="me.project.funding.dto.MemberDTO">
+        <selectKey order="BEFORE" resultType="int" keyProperty="memberNo">
+            select member_seq.nextval from dual
+        </selectKey>
         insert into member (member_no, id, pw, name, email, nick, phone, grade)
-        values (member_seq.nextval, #{id}, #{pw}, #{name}, #{email}, #{nick}, #{phone}, #{grade} )
+        values (#{memberNo}, #{id}, #{pw}, #{name}, #{email}, #{nick}, #{phone}, #{grade} )
     </insert>
 
     <select id="idCheck" parameterType="string" resultType="int">
@@ -22,4 +25,9 @@
         where id = #{id}
     </select>
 
+    <update id="update" parameterType="me.project.funding.dto.MemberDTO">
+        update member
+        set nick = #{nick}, email = #{email}, phone = #{phone}
+        where member_no = #{memberNo}
+    </update>
 </mapper>

@@ -27,4 +27,11 @@ public interface MemberMapper {
      * @return 조회된 회원의 정보
      */
     MemberDTO findById(MemberDTO member);
+
+    /**
+     * 회원정보 업데이트
+     * @param member 업데이트할 회원정보
+     * @return 업데이트 결과
+     */
+    int update(MemberDTO member);
 }

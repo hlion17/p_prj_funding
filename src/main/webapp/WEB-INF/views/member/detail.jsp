@@ -6,7 +6,7 @@
 <script>
     $(document).ready(function () {
         $("#btn-detail").click(function () {
-            location.href="/member/edit"
+            location.href = '/member/update?id=${loginId}'
         })
     })
 </script>

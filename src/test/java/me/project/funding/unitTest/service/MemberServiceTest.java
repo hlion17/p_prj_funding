@@ -6,6 +6,7 @@ import me.project.funding.mapper.MemberMapper;
 import me.project.funding.service.face.MemberService;
 import me.project.funding.service.impl.MemberServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,19 @@ public class MemberServiceTest {
 
     @Mock
     private MemberMapper memberMapper;
+
+    private MemberDTO member;
+
+    @BeforeEach
+    void setUp() {
+        this.member = new MemberDTO();
+        member.setId("testId");
+        member.setPw("testPw");
+        member.setNick("testNick");
+        member.setName("testName");
+        member.setEmail("test@test.com");
+        member.setGrade(1);
+    }
 
     @Test
     @DisplayName("회원가입 테스트")
@@ -126,6 +140,27 @@ public class MemberServiceTest {
         assertEquals(actual.getId(), saveMember.getId());
 
         verify(memberMapper, times(1)).findById(member);
+    }
+
+    @Test
+    @DisplayName("회원 정보 업데이트")
+    void update() {
+        // given
+        MemberDTO member = this.member;
+        member.setNick("editedNick");
+        member.setEmail("editedEmail");
+        member.setPhone("editedPhone");
+
+        given(memberMapper.update(any()))
+                .willReturn(1);
+
+        // when
+        MemberDTO editedMember = memberService.editMemberInfo(member);
+
+        // then
+        assertEquals(editedMember.getNick(), member.getNick());
+        assertEquals(editedMember.getEmail(), member.getEmail());
+        assertEquals(editedMember.getPhone(), member.getPhone());
     }
 
 }

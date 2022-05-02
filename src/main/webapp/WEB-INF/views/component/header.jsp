@@ -13,9 +13,23 @@
     <script src="https://kit.fontawesome.com/c3d0d95309.js" crossorigin="anonymous"></script>
 
     <script>
-        $(document).ready(function() {
+        function sendDataByPost(path, parameters, method = "post") {
+            const form = document.createElement("form")
+            form.method = method
+            form.action = path
+            document.body.appendChild(form)
 
-        })
+            for (const key in parameters) {
+                const formField = document.createElement("input")
+                formField.type = "hidden"
+                formField.name = key
+                formField.value = parameters[key]
+
+                form.appendChild(formField)
+            }
+            form.submit()
+        }
+
     </script>
 </head>
 <body>
@@ -54,7 +68,7 @@
                 <c:when test="${not empty sessionScope.loginId}">
                 <div class="col-md-3 text-end">
                     <button type="button" class="btn btn-outline-primary me-2" onclick="location.href='/member/logout'">로그아웃</button>
-                    <button type="button" class="btn btn-primary" onclick="location.href='/member/detail'">회원정보</button>
+                    <button type="button" class="btn btn-primary" onclick="location.href='/member/detail?id=${sessionScope.loginId}'">회원정보</button>
                 </div>
                 </c:when>
                 <c:otherwise>

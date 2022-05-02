@@ -26,7 +26,7 @@ public class MemberMapperTest {
         // given
         MemberDTO member = new MemberDTO();
         member.setId("testId");
-        member.setPw("testPw");
+        member.setPw(SHA256Util.encryptionSHA256("testPw"));
         member.setNick("testNick");
         member.setName("testName");
         member.setEmail("test@test.com");
@@ -36,9 +36,15 @@ public class MemberMapperTest {
         int result = memberMapper.save(member);
 
         // then
-        // 이렇게 테스트 하는거 아닌거 같음
-        // 나중에 findById 메서드 구현하면 확인
         assertEquals(1, result);
+        assertEquals(member.getMemberNo(), memberMapper.findById(member).getMemberNo());
+        assertEquals(member.getId(), memberMapper.findById(member).getId());
+        assertEquals(member.getPw(), memberMapper.findById(member).getPw());
+        assertEquals(member.getNick(), memberMapper.findById(member).getNick());
+        assertEquals(member.getName(), memberMapper.findById(member).getName());
+        assertEquals(member.getEmail(), memberMapper.findById(member).getEmail());
+        assertEquals(member.getGrade(), memberMapper.findById(member).getGrade());
+
     }
 
     @Test
@@ -87,6 +93,34 @@ public class MemberMapperTest {
         assertEquals(foundMember.getName(), member.getName());
         assertEquals(foundMember.getEmail(), member.getEmail());
         assertEquals(foundMember.getGrade(), member.getGrade());
+    }
+
+    @Test
+    @DisplayName("회원정보 업데이트")
+    void update() {
+        // given
+        MemberDTO member = new MemberDTO();
+        member.setId("testId");
+        member.setPw(SHA256Util.encryptionSHA256("testPw"));
+        member.setNick("testNick");
+        member.setName("testName");
+        member.setEmail("test@test.com");
+        member.setGrade(1);
+
+        memberMapper.save(member);
+
+        member.setNick("editedNick");
+        member.setPhone("010-1111-1111");
+        member.setEmail("edited@test.com");
+
+        // when
+        int result = memberMapper.update(member);
+
+        // then
+        assertEquals(1, result);
+        assertEquals(member.getNick(), memberMapper.findById(member).getNick());
+        assertEquals(member.getPhone(), memberMapper.findById(member).getPhone());
+        assertEquals(member.getEmail(), memberMapper.findById(member).getEmail());
     }
 
 }

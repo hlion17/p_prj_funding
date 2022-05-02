@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -87,6 +88,26 @@ public class MemberController {
         Map<String, Object> model = mav.getModel();
 
         model.put("member", memberService.getDetail(member));
+        return mav;
+    }
+
+    @GetMapping("/member/update")
+    public ModelAndView updatePage(MemberDTO member) {
+        log.info("[/member/update][GET]");
+        ModelAndView mav = new ModelAndView("member/update");
+        Map<String, Object> model = mav.getModel();
+        model.put("member",memberService.getDetail(member));
+        return mav;
+    }
+
+    @PostMapping("/member/update")
+    public ModelAndView update(MemberDTO member, RedirectAttributes rtts) {
+        log.info("[/member/update][POST]");
+        ModelAndView mav = new ModelAndView("redirect:/member/detail?id=" + member.getId());
+
+        MemberDTO editedMember = memberService.editMemberInfo(member);
+
+        rtts.addFlashAttribute("member", editedMember);
         return mav;
     }
 }

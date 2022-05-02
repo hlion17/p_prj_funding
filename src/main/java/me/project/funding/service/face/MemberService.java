@@ -23,4 +23,11 @@ public interface MemberService {
      * @return 조회된 회원의 정보
      */
     MemberDTO getDetail(MemberDTO member);
+
+    /**
+     * 회원정보 업데이트
+     * @param member 업데이트 대상 회원의 정보
+     * @return 업데이트 된 회원의 정보
+     */
+    MemberDTO editMemberInfo(MemberDTO member);
 }

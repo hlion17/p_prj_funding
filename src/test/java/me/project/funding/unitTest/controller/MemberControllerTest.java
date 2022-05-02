@@ -171,4 +171,30 @@ public class MemberControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName("회원정보 수정")
+    void update() throws Exception {
+        // given
+        MemberDTO member = new MemberDTO();
+        member.setMemberNo(1);
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/member/edit")
+                .param("memberNo", String.valueOf(member.getMemberNo()));
+
+        given(memberService.editMemberInfo(member))
+                .willReturn(new MemberDTO());
+
+        // when
+        ResultActions result = this.mockMvc.perform(request);
+
+        // then
+        result.andExpectAll(
+                redirectedUrl("/member/detail")
+                , flash().attributeExists("memberId")
+        ).andDo(print());
+
+
+    }
+
 }

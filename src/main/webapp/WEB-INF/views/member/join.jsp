@@ -5,22 +5,22 @@
 
 <script>
     // POST 방식으로 데이터 보내는 함수
-    function sendDataByPost(path, parameters, method = "post") {
-        const form = document.createElement("form")
-        form.method = method
-        form.action = path
-        document.body.appenChild(form)
-
-        for (const key in parameters) {
-            const formField = document.createElement("input")
-            formField.type = "hidden"
-            formField.name = key
-            formField.value = parameters[key]
-
-            form.appenChild(formField)
-        }
-        form.submit()
-    }
+    // function sendDataByPost(path, parameters, method = "post") {
+    //     const form = document.createElement("form")
+    //     form.method = method
+    //     form.action = path
+    //     document.body.appendChild(form)
+    //
+    //     for (const key in parameters) {
+    //         const formField = document.createElement("input")
+    //         formField.type = "hidden"
+    //         formField.name = key
+    //         formField.value = parameters[key]
+    //
+    //         form.appenChild(formField)
+    //     }
+    //     form.submit()
+    // }
     // 빈칸 검증
     function emptyCheck(val, msg) {
         if (val == "") {
