@@ -61,8 +61,8 @@
         </div>
 
         <div class="row justify-content-center my-5">
-            <button class="btn-primary col-auto mx-3" id="btn-login">로그인</button>
-            <button class="btn-danger col-auto mx-3" onclick="history.back()">취소</button>
+            <button class="btn btn-primary col-auto mx-3" id="btn-login">로그인</button>
+            <button class="btn btn-danger col-auto mx-3" onclick="history.back()">취소</button>
         </div>
 
     </div>
