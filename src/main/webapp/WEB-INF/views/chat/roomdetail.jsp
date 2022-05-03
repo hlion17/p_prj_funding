@@ -3,11 +3,21 @@
 <%-- header --%>
 <%@include file="/WEB-INF/views/component/header.jsp"%>
 
+<style>
+    #chat-box {
+        max-height: 400px;
+        overflow: auto;
+    }
+</style>
+
 <div class="container">
 
     <div>
         <h2>${roomId}</h2>
     </div>
+    <ul class="list-group" id="chat-box">
+        <li class="list-group-item d-flex flex-column" id="chat-result"></li>
+    </ul>
     <div class="input-group">
         <div class="input-group-prepend">
             <label class="input-group-text">내용</label>
@@ -15,12 +25,9 @@
         <input type="text" class="form-control" id="chat-message">
         <div class="input-group-append">
             <button class="btn btn-primary" type="button" onclick="sendMessage();">보내기</button>
+            <button class="btn btn-danger" type="button" onclick="exitChatRoom();">나가기</button>
         </div>
     </div>
-    <ul class="list-group">
-        <li class="list-group-item" id="chat-result">
-        </li>
-    </ul>
     <div></div>
 
 </div>
@@ -51,14 +58,42 @@
     // 받는 메시지
     function recvMessage(recv) {
         console.log(recv)
-        const result = $("#chat-result")
-        const li = $("<li></li>")
+        const result = $("#chat-result");
+        const li = $("<li></li>");
+        const messageContainer = $("<div></div>");
+        const messageDiv = $("<div></div>");
+        const messageHeaderDiv = $("<div></div>");
+        const senderDiv = $("<div></div>");
+        const dateDiv = $("<div></div>")
+        const date = new Date();
+        const dateParse = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
-        li.addClass("list-group-item");
-        li.addClass("list-group-item-action");
-        li.text(recv.sender + ": " + recv.message)
+        dateDiv.text(dateParse);
+        senderDiv.text(recv.sender);
+        messageDiv.text(recv.message);
+        messageHeaderDiv.append(senderDiv);
+        messageHeaderDiv.append(dateDiv);
+        messageHeaderDiv.addClass("d-flex justify-content-between")
+
+        messageDiv.css({"padding": "10px", "border-radius": "0 10px 10px 10px", "background": "beige"});
+
+        messageContainer.append(messageHeaderDiv);
+        messageContainer.append(messageDiv);
+        messageContainer.css({"width": "200px", "align-self": "flex-end"})
+
+        li.addClass("list-group-item list-group-item-action d-flex flex-column");
+        if (recv.sender == '${loginId}') {
+            messageDiv.css("background", "gold")
+            messageContainer.css("align-self", "flex-start")
+        }
+        li.append(messageContainer)
         result.append(li)
-        //this.messages.unshift({"type":recv.type,"sender":recv.type=='ENTER'?'[알림]':recv.sender,"message":recv.message})
+
+        // 채팅 스크롤 맨 아래로 포커싱
+        const chatBox = document.getElementById("chat-box");
+        // clientHeight(보여지는 영역) = scrollHeight(전체 영역) - scrollTop(숨겨진 영역)
+        // 숨겨진 영역 높이를 전체 높히 만큼 쭉 밀어서 스크롤 맨 밑에 오도록 설정
+        chatBox.scrollTop = chatBox.scrollHeight;
 
     }
     // 웹소켓 접속
@@ -81,8 +116,14 @@
             }
         });
     }
+    function exitChatRoom() {
+        ws.send("/app/chat/message", {}, JSON.stringify({type:'EXIT', roomId: '${roomId}', sender: '${loginId}'}));
+        ws.disconnect();
+        history.back();
+    }
 
     connect();
+
 
 
 </script>
