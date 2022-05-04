@@ -5,8 +5,14 @@ import me.project.funding.dto.ChatMessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.converter.SimpleMessageConverter;
 import org.springframework.messaging.handler.annotation.*;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +25,8 @@ public class MessageController {
 
     @Autowired
     private SimpMessageSendingOperations sendingOperations;
+
+//    private SimpMessagingTemplate messagingTemplate;
 
     // setApplicationDestinationPrefixes() 설정에 따라
     // 실질적인 경로는 "/app/chat/message" 가 된다.
@@ -53,6 +61,27 @@ public class MessageController {
 //        log.info("페이로드: {}", payload);
 //        //log.info("Destination: {}", destination);
 //        log.info("Principal: {}", principal);
+    }
+
+    @MessageMapping("/message/to-target")
+    //@SendToUser(destinations = "/queue/data")
+    public void target(ChatMessageDTO message, SimpMessageHeaderAccessor accessor) {
+        // convertAndSendToUser(String user, String destination, Object payload)
+        // destination 은 UserDestinationMessageHandler 를 통해서 "/user/{username}/endpoint" 의 형태로 변환된다.
+        // -> /user/test11/topic/data
+//        sendingOperations.convertAndSendToUser(message.getTargetUser(), "/queue/data", message);
+
+        sendingOperations.convertAndSend("/queue/user-" + message.getTargetUser(), message);
+
+//        log.info("message: {}",message);
+//        log.info("simpHeader: {]", accessor);
+
+
+//        String sessionId = accessor.getSessionAttributes().get("HTTP.SESSION.ID").toString();
+//        System.out.println(sessionId);
+//        //accessor.setSessionId(sessionId);
+//        System.out.println("simpHeader: " + accessor);
+//        return message;
     }
 
 

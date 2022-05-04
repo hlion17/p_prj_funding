@@ -25,6 +25,8 @@
         <input type="text" class="form-control" id="chat-message">
         <div class="input-group-append">
             <button class="btn btn-primary" type="button" onclick="sendMessage();">보내기</button>
+            <button class="btn btn-primary" type="button" onclick="test();">테스트</button>
+            <button class="btn btn-primary" type="button" onclick="subTest();">구독 테스트</button>
             <button class="btn btn-danger" type="button" onclick="exitChatRoom();">나가기</button>
         </div>
     </div>
@@ -50,6 +52,31 @@
     var sock = new SockJS("/ws/chat");
     var ws = Stomp.over(sock);
     var reconnect = 0;
+    // 테스트
+    function subTest() {
+        ws.subscribe("/queue/user-" + "${loginId}" , function(message) {
+            var recv = JSON.parse(message.body);
+            recvMessage(recv);
+        })
+        <%--ws.subscribe("/user/${loginId}/queue/data", function(message) {--%>
+        <%--    var recv = JSON.parse(message.body);--%>
+        <%--    recvMessage(recv);--%>
+        <%--})--%>
+        // ws.subscribe('/user/topic/data', function (message) {
+        //     $('.' + user).text(JSON.parse(message.body).time);
+        // })
+    }
+    // 테스트
+    function test() {
+        const message = $("#chat-message").val();
+        ws.send("/app/message/to-target", {}, JSON.stringify({
+            type:'TALK'
+            , roomId: '${roomId}'
+            , sender: '${loginId}'
+            , message: message
+            , targetUser: "test11"})  // 대상 유저 하드코딩
+        );
+    }
     // 보내는 메시지
     function sendMessage() {
         const message = $("#chat-message").val();

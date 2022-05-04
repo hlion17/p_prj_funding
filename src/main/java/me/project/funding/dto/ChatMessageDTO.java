@@ -17,4 +17,6 @@ public class ChatMessageDTO {
     private String sender;
     // 내용
     private String message;
+    // 대상 유저
+    private String targetUser;
 }

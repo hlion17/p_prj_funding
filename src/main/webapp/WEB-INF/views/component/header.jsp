@@ -13,26 +13,72 @@
     <script src="https://kit.fontawesome.com/c3d0d95309.js" crossorigin="anonymous"></script>
 
     <script>
-        function sendDataByPost(path, parameters, method = "post") {
-            const form = document.createElement("form")
-            form.method = method
-            form.action = path
-            document.body.appendChild(form)
+    // 사용자 정의 POST 요청 함수
+    function sendDataByPost(path, parameters, method = "post") {
+        const form = document.createElement("form")
+        form.method = method
+        form.action = path
+        document.body.appendChild(form)
 
-            for (const key in parameters) {
-                const formField = document.createElement("input")
-                formField.type = "hidden"
-                formField.name = key
-                formField.value = parameters[key]
+        for (const key in parameters) {
+            const formField = document.createElement("input")
+            formField.type = "hidden"
+            formField.name = key
+            formField.value = parameters[key]
 
-                form.appendChild(formField)
-            }
-            form.submit()
+            form.appendChild(formField)
         }
+        form.submit()
+    }
+    </script>
 
+    <%-- 웹소켓 관련 --%>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+    var loginId = '${loginId}'
+    var sock = new SockJS("/ws/chat");
+    var ws = Stomp.over(sock);
+    var reconnect = 0;
+    // 받은 메시지 처리
+    function alertMessage(recv) {
+        const alert = $("#user-alert")
+        alert.css("display", "block")
+        alert.text(recv.message)
+        setTimeout(function () {
+            alert.css("display", "none")
+        }, 5 * 1000);
+    }
+    // 웹소켓 접속
+    function connect() {
+        // 로그인 했을 경우에만 웹소켓 접속
+        if (loginId !== '') {
+            ws.connect({}, function(frame) {
+                // 접속시 세션에 등록된 아이디로 메시지 브로커 구독
+                ws.subscribe("/queue/user-" + "${loginId}", function (message) {
+                    var recv = JSON.parse(message.body);
+                    alertMessage(recv);
+                });
+            }, function(error) {
+                if(reconnect++ <= 5) {
+                    setTimeout(function() {
+                        console.log("connection reconnect");
+                        sock = new SockJS("/ws/chat");
+                        ws = Stomp.over(sock);
+                        connect();
+                    },10*1000);
+                }
+            })
+        }
+    }
+    // 웹소켓 접속
+    connect();
     </script>
 </head>
 <body>
+
+<%-- 알림창 --%>
+<div class="alert alert-success" role="alert" id="user-alert" style="display: none;"></div>
 
 <!-- header -->
 <header>
