@@ -66,6 +66,7 @@ public class MemberController {
             model.put("result", 1);
             model.put("msg", "로그인 성공");
             session.setAttribute("loginId", result.getId());
+            session.setAttribute("loginMemberNo", result.getMemberNo());
         }
         
         return mav;
