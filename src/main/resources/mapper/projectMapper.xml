@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.project.funding.mapper.ProjectMapper">
+
+    <sql id="selectFromProject">
+        select
+            project_no
+            , member_no
+            , category_id
+            , project_title
+            , project_intro
+            , budget_plan
+            , schedule_plan
+            , project_image
+            , project_price
+            , open_date
+            , close_date
+            , delivery_date
+            , project_content
+            , fund_price
+            , project_step
+        from project
+    </sql>
+
+
+    <resultMap id="ProjectWithMember" type="me.project.funding.dto.ProjectDTO">
+        <association property="me.project.funding.dto.MemberDTO" column="memberNo" javaType="me.project.funding.dto.MemberDTO" select="selectMember">
+        </association>
+    </resultMap>
+    
+    <select id="selectMember" resultType="me.project.funding.dto.MemberDTO">
+        select * from member
+    </select>
+
+
+    <select id="findOnWritingProject" parameterType="me.project.funding.dto.MemberDTO" resultType="me.project.funding.dto.ProjectDTO">
+        <include refid="selectFromProject"/>
+        where member_no = #{memberNo}
+            and project_step = 0
+    </select>
+
+    <select id="findByNo" parameterType="int" resultType="me.project.funding.dto.ProjectDTO">
+        <include refid="selectFromProject" />
+        where project_no = #{projectNo}
+    </select>
+
+    <insert id="insert" parameterType="me.project.funding.dto.ProjectDTO">
+        <selectKey order="BEFORE" resultType="int" keyProperty="projectNo">
+            select project_seq.nextval from dual
+        </selectKey>
+        insert into project (project_no, project_intro, category_id, member_no)
+        values (#{projectNo}, #{projectIntro}, #{categoryId}, #{memberNo})
+    </insert>
+
+    <update id="update" parameterType="me.project.funding.dto.ProjectDTO">
+        update project
+            set category_id = #{categoryId}
+            , project_title = #{projectTitle}
+            , project_intro = #{projectIntro}
+            , budget_plan = #{budgetPlan}
+            , schedule_plan = #{schedulePlan}
+            , project_image = #{projectImage}
+            , project_price = #{projectPrice}
+            , open_date = #{openDate}
+            , close_date = #{closeDate}
+            , delivery_date = #{deliveryDate}
+            , project_content = #{projectContent}
+            , fund_price = #{fundPrice}
+        where project_no = #{projectNo}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete project
+        where project_no = #{projectNo}
+    </delete>
+
+    <select id="getCategory" resultType="me.project.funding.dto.CategoryDTO">
+        select category_no, category_name
+        from category
+    </select>
+
+</mapper>
