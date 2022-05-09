@@ -294,7 +294,6 @@ public class ProjectController {
     }
 
     // not tested
-
     /**
      * 개별 프로젝트 조회
      * @param projectNo 조회할 프로젝트 식별값
@@ -311,6 +310,33 @@ public class ProjectController {
 
         // View 전달 데이터
         model.put("project", project);
+        return mav;
+    }
+
+    // not tested
+    // 프로제트 삭제를 시험하기 위해 임시로 만듬
+    @GetMapping("/project/my/{memberNo}")
+    public ModelAndView getMyProject(@PathVariable int memberNo, HttpSession session) {
+        log.info("[/project/my/{}][GET]", memberNo);
+        ModelAndView mav = new ModelAndView("project/test");
+        Map<String, Object> model = mav.getModel();
+
+        if (memberNo < 1) {
+            log.error("올바르지 않는 회원 식별값: {}", memberNo);
+            throw new RuntimeException("요청 파라미터가 올바르지 않습니다.");
+        }
+
+        MemberDTO member = new MemberDTO();
+        member.setMemberNo(memberNo);
+        member.setId((String) session.getAttribute("loginId"));
+        log.info("파라미터: {}", member);
+
+        // 특정 회원의 프로젝트를 가져온다.
+        List<ProjectDTO> result = projectService.getOnWritingProject(member);
+
+        // View 전달 데이터
+        model.put("list", result);
+        log.info("조회된 결과: {}", result);
         return mav;
     }
 }

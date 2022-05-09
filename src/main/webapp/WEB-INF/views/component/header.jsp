@@ -120,6 +120,7 @@
                 <div class="col-md-3 text-end">
                     <button type="button" class="btn btn-outline-primary me-2" onclick="location.href='/member/logout'">로그아웃</button>
                     <button type="button" class="btn btn-primary" onclick="location.href='/member/detail?id=${sessionScope.loginId}'">회원정보</button>
+                    <button type="button" class="btn btn-primary" onclick="location.href='/project/my/${sessionScope.loginMemberNo}'">(임시)</button>
                 </div>
                 </c:when>
                 <c:otherwise>
