@@ -25,6 +25,8 @@ public class ProjectDTO {
     private int fundPrice;
     private int projectStep;
 
+    private int sum;
+
     // Member 테이블과 조인할 경우
     @ToString.Exclude
     MemberDTO member = new MemberDTO();

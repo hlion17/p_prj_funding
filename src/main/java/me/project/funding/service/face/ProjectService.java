@@ -1,8 +1,10 @@
 package me.project.funding.service.face;
 
+import me.project.funding.commons.Pagination;
 import me.project.funding.dto.CategoryDTO;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.dto.ProjectDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -44,4 +46,19 @@ public interface ProjectService {
      * @return 조회된 카테고리 목록
      */
     List<CategoryDTO> getCategoryList();
+
+    /**
+     * 프로젝트 대표 이미지 파일 업로드
+     * @param file 업로드할 파일 정보
+     * @param path 업로드할 경로
+     * @return 업로드한 파일 이름(저장된 이름)
+     */
+    String uploadFile(MultipartFile file, String path);
+
+    /**
+     * 프로젝트 리스트를 가져온다.
+     * @param pagination 검색어, 필터링, 정렬기준, 페이지 정보가 담긴 DTO
+     * @return DTO 조건이 반영된 프로젝트 리스트
+     */
+    List<ProjectDTO> getPageList(Pagination pagination);
 }

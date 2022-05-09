@@ -60,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
             return null;
         } else {
             log.info("로그인 인증 성공");
-            return member;
+            return result;
         }
 
     }

@@ -91,11 +91,16 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">프로젝트</a>
+                        <a class="nav-link active" aria-current="page" href="/project/list">프로젝트</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/chat/room">채팅</a>
                     </li>
+                    <c:if test="${not empty loginId}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/project/start">프로젝트 올리기</a>
+                    </li>
+                    </c:if>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             임시메뉴

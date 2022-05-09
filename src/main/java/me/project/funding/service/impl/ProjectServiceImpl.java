@@ -2,6 +2,7 @@ package me.project.funding.service.impl;
 
 
 import lombok.extern.slf4j.Slf4j;
+import me.project.funding.commons.Pagination;
 import me.project.funding.dto.CategoryDTO;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.dto.ProjectDTO;
@@ -11,8 +12,13 @@ import me.project.funding.service.face.MemberService;
 import me.project.funding.service.face.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -23,6 +29,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private MemberMapper memberMapper;
+
+    @Autowired
+    ServletContext context;
 
     @Override
     public List<ProjectDTO> getOnWritingProject(MemberDTO member) {
@@ -97,5 +106,50 @@ public class ProjectServiceImpl implements ProjectService {
     public List<CategoryDTO> getCategoryList() {
         // 프로젝트 카테고리 목록을 가져온다.
         return projectMapper.getCategory();
+    }
+
+    // not tested
+    @Override
+    public String uploadFile(MultipartFile file, String path) {
+        // 업로드 폴더 정보 생성
+        String uploadPath = context.getRealPath(path);
+        // 스프링 부트에서는 내장 톰켓을 사용하여 war 를 읽어들이기 떄문에
+        // getRealPath 가 정확한 위치를 반환하지 않는다고 한다.
+        log.info("서블릿 경로: {}", uploadPath);
+        File uploadFolder = new File(uploadPath);
+        if (!uploadFolder.exists()) {
+            uploadFolder.mkdir();
+            log.info("업로드 경로 생성: {}", uploadFolder.getPath());
+        }
+
+        // 업로드 파일정보 생성
+        String fileName = UUID.randomUUID().toString().split("-")[4];
+        log.info("저장될 파일 이름: {}", fileName);
+        File dest = new File(uploadPath, fileName);
+
+        // 파일 업로드
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            log.error("파일 업로드 실패");
+            e.printStackTrace();
+        }
+        return fileName;
+    }
+
+    // not tested
+
+    @Override
+    public List<ProjectDTO> getPageList(Pagination pagination) {
+        log.info("pagination: {}", pagination);
+
+        int total = projectMapper.getTotalCnt(pagination);
+
+        // 한 페이지에 보여줄 프로젝트 수 10 개로 지정
+        pagination.build(10, total);
+
+        List<ProjectDTO> list = projectMapper.findAllByFilterAndOrder(pagination);
+
+        return list;
     }
 }

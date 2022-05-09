@@ -13,12 +13,12 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 public class WebConfig implements WebMvcConfigurer {
 
     // 정적리소스 설정
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/img/**")
-//                .addResourceLocations("classpath:/webapp/resource")
-//                .setCachePeriod(20);
-//    }
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("/uploads/")
+                .setCachePeriod(20);
+    }
 
     // JSON View Resolver 빈 등록
     @Bean

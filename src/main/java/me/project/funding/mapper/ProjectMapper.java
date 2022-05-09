@@ -1,5 +1,6 @@
 package me.project.funding.mapper;
 
+import me.project.funding.commons.Pagination;
 import me.project.funding.dto.CategoryDTO;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.dto.ProjectDTO;
@@ -50,4 +51,18 @@ public interface ProjectMapper {
      */
     // 테이블은 다르지만 프로젝트 테이블에 전속되어 사용되는 테이블이라 ProjectMapper 에서 처리
     List<CategoryDTO> getCategory();
+
+    /**
+     * 페이지네이션 조건에 따른 프로젝트 리스트 개수를 조회한다.
+     * @param pagination 검색어, 필터, 정렬기준, 페이지 정보 DTO
+     * @return 프로젝트 리스트 개수
+     */
+    int getTotalCnt(Pagination pagination);
+
+    /**
+     * 필터, 정렬기준이 적용된 프로젝트 리스트 조회
+     * @param pagination 검색어, 필터, 정렬기준, 페이지 정보 DTO
+     * @return 페이지 정보가 적용된 프로젝트 리스트
+     */
+    List<ProjectDTO> findAllByFilterAndOrder(Pagination pagination);
 }
