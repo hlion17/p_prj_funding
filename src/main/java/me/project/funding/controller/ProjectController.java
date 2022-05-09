@@ -292,4 +292,25 @@ public class ProjectController {
 
         return "project/list";
     }
+
+    // not tested
+
+    /**
+     * 개별 프로젝트 조회
+     * @param projectNo 조회할 프로젝트 식별값
+     * @return 조회된 프로젝트
+     */
+    @GetMapping("/project/{projectNo}")
+    public ModelAndView detail(@PathVariable int projectNo) {
+        log.info("[/project/{}][GET]", projectNo);
+        ModelAndView mav = new ModelAndView("project/detail");
+        Map<String, Object> model = mav.getModel();
+
+        // 프로젝트 조회
+        ProjectDTO project = projectService.getProject(projectNo);
+
+        // View 전달 데이터
+        model.put("project", project);
+        return mav;
+    }
 }

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%-- header --%>
-<%@include file="/WEB-INF/views/component/header.jsp"%>
+<%@include file="/WEB-INF/views/component/header.jsp" %>
 
 <script src="https://kit.fontawesome.com/c3d0d95309.js" crossorigin="anonymous"></script>
 
@@ -15,9 +15,11 @@
         font-size: 12px;
         border-radius: 15px;
     }
+
     #category-section .container {
         overflow: auto;
     }
+
     #category-section .row {
         flex-flow: nowrap;
     }
@@ -25,28 +27,32 @@
 
 <script>
 
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         // 검색어 입력
-        $("input[name=keyword]").on("keyup", function(key) {
+        $("input[name=keyword]").on("keyup", function (key) {
             if (key.keyCode == 13) {
                 getList('${pagination.category}');
             }
         })
         // 필터 선택
-        $("select[name=filter]").change(function() {
+        $("select[name=filter]").change(function () {
             getList('${pagination.category}');
         })
         // 정렬 선택
-        $("select[name=order]").change(function() {
+        $("select[name=order]").change(function () {
             getList('${pagination.category}');
         })
         // 필터, 정렬 조건 유지
         setCondition()
 
+        // 개별 프로젝트 이동
+        $(".project-card").click(function () {
+            const projectNo = $(this).attr("data-projectNo")
+            location.href = '/project/' + projectNo
+        })
 
     })
-
 
 
     // 프로젝트 리스트 조회
@@ -66,9 +72,10 @@
             + ' / order: ' + order
         )
 
-        location.href="/project/list?curPage=" + curPage + "&keyword=" + keyword + "&category=" + category + "&filter=" + filter + "&order=" + order;
+        location.href = "/project/list?curPage=" + curPage + "&keyword=" + keyword + "&category=" + category + "&filter=" + filter + "&order=" + order;
 
     }
+
     // 정렬 조건 유지
     function setCondition() {
         const selectOrder = document.querySelector("select[name=order]")
@@ -88,32 +95,11 @@
             }
         }
     }
-    // 카테고리 이동 - 중도 포기 그냥 scroll로 하자
-    // function nextCategory() {
-    //   const row = document.querySelector("#category-section .row");
-    //   const parentX = document.querySelector("#category-section .container").getBoundingClientRect().x;
-    //   const childX = document.querySelector("#category-section .row").getBoundingClientRect().x;
-    //   const parentR = document.querySelector("#category-section .container").getBoundingClientRect().right;
-    //   const childR = document.querySelector("#category-section .row").getBoundingClientRect().right;
-    //
-    //   const parent = document.querySelector("#category-section .container");
-    //   const child = document.querySelector("#category-section .row");
-    //
-    //   console.log("P-x: ", parentX)
-    //   console.log("C-x: ", childX)
-    //   console.log("P-right: ", parentR)
-    //   console.log("C-right: ", childR)
-    //
-    //   console.log("parent: ", parent.clientWidth)
-    //   console.log("child: ", child.clientWidth)
-    //
-    //   row.style.transform = 'translateX(' + (childX - parentX - 100) + 'px)';
-    // }
+
 </script>
 
 
 <main>
-
     <!-- 카테고리 -->
     <section id="category-section">
         <div class="container py-5">
@@ -125,7 +111,8 @@
 
                 <c:forEach var="c" items="${cList}">
                     <div class="col text-center me-4" onclick="getList('${c.categoryNo}')">
-                        <div><img src="/resources/img/project/category/${c.categoryNo}.svg"  style="withd: 80px; height: 60px"></div>
+                        <div><img src="/resources/img/project/category/${c.categoryNo}.svg"
+                                  style="withd: 80px; height: 60px"></div>
                         <span>${c.categoryName}</span>
                     </div>
                 </c:forEach>
@@ -146,7 +133,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-auto me-auto">
-                        <input class="form-control" list="datalistOptions" placeholder="Type to search..." name="keyword">
+                        <input class="form-control" list="datalistOptions" placeholder="Type to search..."
+                               name="keyword">
                         <datalist id="datalistOptions">
                             <!-- <option value="추천 검색어1">
                             <option value="추천 검색어2"> -->
@@ -176,34 +164,34 @@
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
                     <c:forEach var="p" items="${list}">
-                        <div class="col" style="max-width: 250px;">
-                            <div class="card shadow-sm">
-                                <img src="${p.projectImage }" style="min-height: 250px;">
-                                <div class="card-body">
-                                    <strong>${p.projectTitle}</strong>
+                    <div class="col project-card" style="max-width: 250px;" data-projectNo="${p.projectNo}">
+                        <div class="card shadow-sm">
+                            <img src="${p.projectImage}" style="min-height: 250px;">
+                            <div class="card-body">
+                                <strong>${p.projectTitle}</strong>
                                     <c:if test="${p.projectStep eq 4}">
-                                        <span id="project-status">마감</span>
+                                    <span id="project-status">마감</span>
                                     </c:if>
-                                    <p class="card-text">${p.projectIntro}</p>
-                                    <progress value="${p.sum}" max="${p.projectPrice}"></progress>
-                                    <div class="row fs-6">
-                                        <div class="col d-flex">
-                <span style="margin-right: 10px;">
-                	<fmt:formatNumber value="${p.sum / p.projectPrice}" type="percent"/>
-                </span>
-                                            <span>
-	                <fmt:formatNumber value="${p.projectPrice}" pattern="#,###"/>
-                </span>
-                                        </div>
-                                        <div class="col text-end">
-                <span>
-                <fmt:formatDate value="${p.closeDate}" pattern="yy/MM/dd"/>
-                </span>
-                                        </div>
+                                <p class="card-text">${p.projectIntro}</p>
+                                <progress value="${p.sum}" max="${p.projectPrice}"></progress>
+                                <div class="row fs-6">
+                                    <div class="col d-flex">
+                                        <span style="margin-right: 10px;">
+                                        <fmt:formatNumber value="${p.sum / p.projectPrice}" type="percent"/>
+                                        </span>
+                                        <span>
+                                        <fmt:formatNumber value="${p.projectPrice}" pattern="#,###"/>
+                                        </span>
+                                    </div>
+                                    <div class="col text-end">
+                                        <span>
+                                        <fmt:formatDate value="${p.closeDate}" pattern="yy/MM/dd"/>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </c:forEach>
 
                 </div>
@@ -217,4 +205,4 @@
 </main>
 
 <%-- footer --%>
-<%@include file="/WEB-INF/views/component/footer.jsp"%>
+<%@include file="/WEB-INF/views/component/footer.jsp" %>

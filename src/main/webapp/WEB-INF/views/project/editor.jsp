@@ -16,6 +16,10 @@
     .editor-section {
         margin: 20px 0;
     }
+    #img-section img {
+        width: 250px;
+        height: 200px;
+    }
 </style>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script src="/resources/ckeditor_standard/ckeditor.js"></script>
@@ -24,7 +28,7 @@
     $(document).ready(function() {
         // 작성중인 프로젝트 카테고리 선택
         const select = document.querySelector("#select-category")
-        for (i = 1; select.length; i++) {
+        for (i = 0; select.length; i++) {
             if (select.options[i].value == '${project.categoryId}') {
                 select.options[i].selected = true
                 break
@@ -48,8 +52,11 @@
                 , success: function(res) {
                     console.log("성공")
                     console.log(res)
+
+                    $("#upload-img").removeAttr("src")
                     $("#upload-img").attr("src", res.fileUrl)
                     const input = $("<input type='hidden' name='projectImage'>")
+
                     input.attr("value", res.fileUrl)
                     $("#img-section").append(input)
                 }
@@ -68,7 +75,7 @@
         <input type="hidden" name="projectNo" value="${project.projectNo}">
         <div class="editor-section">
             <h2>프로젝트 이름</h2>
-            <input type="text" name="projectTitle" value="${project.projectTitle}">
+            <input type="text" name="projectTitle" value="${project.projectTitle}" style="width: 100%">
         </div>
         <div class="editor-section">
             <h2>프로젝트 카테고리</h2>
@@ -85,9 +92,6 @@
         <div class="editor-section" id="img-section">
             <h2>프로젝트 대표 이미지 등록</h2>
             <input type="file" id="file-upload">
-            <c:if test="${not empty project.projectImage}">
-
-            </c:if>
             <img src="${project.projectImage}" alt="" id="upload-img">
         </div>
         <div class="editor-section">

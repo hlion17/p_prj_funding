@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.project.funding.dto.ChatMessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +21,7 @@ public class testController {
         log.info("테스트 컨트롤러");
         ChatMessageDTO message = new ChatMessageDTO();
         message.setMessage("테스트 메시지");
-        message.setTargetUser("test11");
+        message.setTargetUser("test2");
         template.convertAndSend("/queue/user-" + message.getTargetUser(), message);
     }
 }
