@@ -13,7 +13,8 @@ public class DataSourceConfig {
     public DataSource datasourceBuilder() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("oracle.jdbc.driver.OracleDriver");
-        dataSourceBuilder.url("jdbc:oracle:thin:@localhost:1521:xe");
+//        dataSourceBuilder.url("jdbc:oracle:thin:@localhost:1521:xe");
+        dataSourceBuilder.url("jdbc:oracle:thin:@122.46.39.213:11200:xe");
         dataSourceBuilder.username("kh5test");
         dataSourceBuilder.password("1234");
         return dataSourceBuilder.build();

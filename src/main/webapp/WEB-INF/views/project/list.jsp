@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%-- header --%>
 <%@include file="/WEB-INF/views/component/header.jsp" %>
@@ -22,6 +24,56 @@
 
     #category-section .row {
         flex-flow: nowrap;
+    }
+</style>
+
+
+<style>
+    .section-img {
+        padding: 3px;
+    }
+    .section-img img {
+        width: 100%;
+        object-fit: cover;
+    }
+    .section-body {
+        display: flex;
+        flex-direction: column;
+        /*justify-content: space-around;*/
+        min-height: 220px;
+    }
+    [class^="body"] {
+        margin: 5px 0;
+    }
+    .section-body .body-title {
+        margin: 5px 0;
+        font-size: 14px;
+        height: 40px;
+        overflow: hidden;
+    }
+    .section-body .body-intro {
+        font-size: 12px;
+        height: 40px;
+        overflow: hidden;
+    }
+    .section-body .body-progress {
+        flex-grow: 1;
+    }
+    .section-body .body-progress progress {
+        width: 100%;
+    }
+    .section-body .body-etc {
+        flex-grow: 1;
+    }
+    .section-body .body-etc span {
+        font-size: 12px;
+    }
+    .section-body .body-etc div:nth-child(2) {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .section-body .body-etc div:first-child > span:first-child{
+        color: red;
     }
 </style>
 
@@ -163,36 +215,80 @@
             <div class="container">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
-                    <c:forEach var="p" items="${list}">
-                    <div class="col project-card" style="max-width: 250px;" data-projectNo="${p.projectNo}">
-                        <div class="card shadow-sm">
-                            <img src="${p.projectImage}" style="min-height: 250px;">
-                            <div class="card-body">
-                                <strong>${p.projectTitle}</strong>
-                                    <c:if test="${p.projectStep eq 4}">
-                                    <span id="project-status">마감</span>
-                                    </c:if>
-                                <p class="card-text">${p.projectIntro}</p>
-                                <progress value="${p.sum}" max="${p.projectPrice}"></progress>
-                                <div class="row fs-6">
-                                    <div class="col d-flex">
-                                        <span style="margin-right: 10px;">
-                                        <fmt:formatNumber value="${p.sum / p.projectPrice}" type="percent"/>
-                                        </span>
-                                        <span>
-                                        <fmt:formatNumber value="${p.projectPrice}" pattern="#,###"/>
-                                        </span>
-                                    </div>
-                                    <div class="col text-end">
-                                        <span>
-                                        <fmt:formatDate value="${p.closeDate}" pattern="yy/MM/dd"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+<%--                    <c:forEach var="p" items="${list}">--%>
+<%--                    <div class="col project-card" style="max-width: 250px;" data-projectNo="${p.projectNo}">--%>
+<%--                        <div class="card shadow-sm">--%>
+<%--                            <img src="${p.projectImage}" style="min-height: 250px;">--%>
+<%--                            <div class="card-body">--%>
+<%--                                <strong>${p.projectTitle}</strong>--%>
+<%--                                    <c:if test="${p.projectStep eq 4}">--%>
+<%--                                    <span id="project-status">마감</span>--%>
+<%--                                    </c:if>--%>
+<%--                                <p class="card-text">${p.projectIntro}</p>--%>
+<%--                                <progress value="${p.sum}" max="${p.projectPrice}"></progress>--%>
+<%--                                <div class="row fs-6">--%>
+<%--                                    <div class="col d-flex">--%>
+<%--                                        <span style="margin-right: 10px;">--%>
+<%--                                        <fmt:formatNumber value="${p.sum / p.projectPrice}" type="percent"/>--%>
+<%--                                        </span>--%>
+<%--                                        <span>--%>
+<%--                                        <fmt:formatNumber value="${p.projectPrice}" pattern="#,###"/>--%>
+<%--                                        </span>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col text-end">--%>
+<%--                                        <span>--%>
+<%--                                        <fmt:formatDate value="${p.closeDate}" pattern="yy/MM/dd"/>--%>
+<%--                                        </span>--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
+<%--                            </div>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                    </c:forEach>--%>
+
+
+
+    <c:forEach var="p" items="${list}">
+        <%-- 테스트 영역 --%>
+        <div class="col project-card" data-projectNo="${p.projectNo}" style="max-width: 250px;">
+            <!-- 카드 영역 -->
+            <div class="card shadow-sm card-section">
+                <!-- 카드 이미지 -->
+                <div class="section-img">
+                    <img src="${p.projectImage }" style="min-height: 250px;">
+                </div>
+                <!-- 카드 몸통 -->
+                <div class="card-body section-body">
+                    <!-- 타이틀 영역 -->
+                    <div class="body-title">
+                        <strong>${p.projectTitle}</strong>
+                        <c:if test="${p.projectStep eq 4}">
+                            <span id="project-status">마감</span>
+                        </c:if>
+                    </div>
+                    <!-- 인트로 영역 -->
+                    <div class="body-intro">
+                        <p class="card-text">${p.projectIntro}</p>
+                    </div>
+                    <!-- 진행바 영역 -->
+                    <div class="body-progress">
+                        <progress value="${p.sum}" max="${p.projectPrice}"></progress>
+                    </div>
+                    <!-- 기타 정보 영역 -->
+                    <div class="row fs-6 body-etc">
+                        <div class="col d-flex">
+                            <span style="margin-right: 10px;"><fmt:formatNumber value="${p.sum / p.projectPrice}" type="percent"/></span>
+                            <span><fmt:formatNumber value="${p.projectPrice}" pattern="#,###"/></span>
+                        </div>
+                        <div class="col text-end">
+                            <span><fmt:formatDate value="${p.closeDate}" pattern="yy/MM/dd"/></span>
                         </div>
                     </div>
-                    </c:forEach>
+                </div>
+            </div>
+        </div>
+    </c:forEach>
+
 
                 </div>
             </div>

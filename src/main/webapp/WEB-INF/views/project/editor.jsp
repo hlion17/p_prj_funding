@@ -26,6 +26,28 @@
 
 <script>
     $(document).ready(function() {
+        // 불러온 데이터
+        // 기본정보
+        const loadProjectTitle = `${project.projectTitle}`
+        const loadCategoryId = `${project.categoryId}`
+        const loadProjectIntro = `${project.projectIntro}`
+        const loadProjectImage = `${project.projectImage}`
+        const loadProjectContent = `${project.projectContent}`
+        // 예산 정보
+        const loadProjectPrice = `${project.projectPrice}`
+        const loadBudgetPlan = `${project.budgetPlan}`
+        // 일정 정보
+        const loadSchedulePlan = `${project.schedulePlan}`
+        const loadOpenDate = `<fmt:formatDate value="${project.openDate}" pattern="yyyy-MM-dd"/>`
+        const loadCloseDate = `<fmt:formatDate value="${project.closeDate}" pattern="yyyy-MM-dd"/>`
+        const loadDeliveryDate = `<fmt:formatDate value="${project.deliveryDate}" pattern="yyyy-MM-dd"/>`
+
+        console.log(loadProjectTitle, loadCategoryId, loadProjectIntro
+            , loadProjectImage, loadProjectContent, loadProjectPrice
+            , loadBudgetPlan, loadSchedulePlan, loadOpenDate
+            , loadCloseDate, loadDeliveryDate )
+
+
         // 작성중인 프로젝트 카테고리 선택
         const select = document.querySelector("#select-category")
         for (i = 0; select.length; i++) {
@@ -66,80 +88,181 @@
             })
         })
 
+
+
+
+
+
+
+
+        // 데이터 변경 감지
+        // $("#test1").click(function () {
+        //     console.log("테스트")
+        //     const test = CKEDITOR.instances["projectContent-ck"].getData()
+        //     console.log(test)
+        // })
+
+        $("input[name]").change(function () {
+
+            var selectList = document.getElementById("select-category")
+
+            console.log(loadCategoryId)
+            console.log(selectList.options[selectList.selectedIndex].value)
+            console.log(loadProjectImage)
+            console.log($("#img-section img").prop("src"))
+            console.log(loadProjectPrice)
+            console.log($("input[name=projectPrice]").val())
+            console.log(loadOpenDate)
+            console.log($("input[name=openDate]").val())
+            console.log(loadCloseDate)
+            console.log($("input[name=closeDate]").val())
+            console.log(loadDeliveryDate)
+            console.log($("input[name=deliveryDate]").val())
+            if (loadProjectTitle != $("input[name=projectTitle]").val()) {
+                $("#test1").removeAttr("disabled")
+                return false
+            }
+            $("#test1").attr("disabled", "true")
+        })
+        // ckeditor 내용일치 검증
+        CKEDITOR.instances["projectIntro-ck"].on("instanceReady", function(){
+            this.document.on("keyup", function () {
+                if (loadProjectIntro != CKEDITOR.instances['projectIntro-ck'].getData()) {
+                    $("#test1").removeAttr("disabled")
+                    return false
+                }
+                $("#test1").attr("disabled", "true")
+            });
+        });
+        CKEDITOR.instances["projectContent-ck"].on("instanceReady", function(){
+            this.document.on("keyup", function () {
+                if (loadProjectContent != CKEDITOR.instances['projectContent-ck'].getData()) {
+                    $("#test1").removeAttr("disabled")
+                    return false
+                }
+                $("#test1").attr("disabled", "true")
+            });
+        });
+        CKEDITOR.instances["budgetPlan-ck"].on("instanceReady", function(){
+            this.document.on("keyup", function () {
+                if (loadBudgetPlan != CKEDITOR.instances['budgetPlan-ck'].getData()) {
+                    $("#test1").removeAttr("disabled")
+                    return false
+                }
+                $("#test1").attr("disabled", "true")
+            });
+        });
+        CKEDITOR.instances["schedulePlan-ck"].on("instanceReady", function(){
+            this.document.on("keyup", function () {
+                if (loadSchedulePlan != CKEDITOR.instances['schedulePlan-ck'].getData()) {
+                    $("#test1").removeAttr("disabled")
+                    return false
+                }
+                $("#test1").attr("disabled", "true")
+            });
+        });
+
+
+
+
+
+
+
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+
     })
 </script>
 
 <section>
+    <button id="test1" disabled="true" style="position: fixed">테스트</button>
     <div class="container">
         <form action="/project/update" method="post">
-        <input type="hidden" name="projectNo" value="${project.projectNo}">
-        <div class="editor-section">
-            <h2>프로젝트 이름</h2>
-            <input type="text" name="projectTitle" value="${project.projectTitle}" style="width: 100%">
-        </div>
-        <div class="editor-section">
-            <h2>프로젝트 카테고리</h2>
-            <select name="categoryId" id="select-category">
-                <c:forEach var="c" items="${cList}">
-                <option value="${c.categoryNo}">${c.categoryName}</option>
-                </c:forEach>
-            </select>
-        </div>
-        <div class="editor-section">
-            <h2>프로젝트 소개</h2>
-            <textarea name="projectIntro" id="projectIntro-ck" cols="30" rows="10">${project.projectIntro}</textarea>
-        </div>
-        <div class="editor-section" id="img-section">
-            <h2>프로젝트 대표 이미지 등록</h2>
-            <input type="file" id="file-upload">
-            <img src="${project.projectImage}" alt="" id="upload-img">
-        </div>
-        <div class="editor-section">
-            <h2>프로젝트 내용</h2>
-            <textarea name="projectContent" id="projectContent-ck" cols="30" rows="10">${project.projectContent}</textarea>
-        </div>
+            <%-- 프로젝트 식별값 --%>
+            <input type="hidden" name="projectNo" value="${project.projectNo}">
+            <%-- 프로젝트 이름 --%>
+            <div class="editor-section">
+                <h2>프로젝트 이름</h2>
+                <input type="text" name="projectTitle" value="${project.projectTitle}" style="width: 100%">
+            </div>
+            <%-- 프로젝트 카테고리 --%>
+            <div class="editor-section">
+                <h2>프로젝트 카테고리</h2>
+                <select name="categoryId" id="select-category">
+                    <c:forEach var="c" items="${cList}">
+                    <option value="${c.categoryNo}">${c.categoryName}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <%-- 프로젝트 소개 --%>
+            <div class="editor-section">
+                <h2>프로젝트 소개</h2>
+                <textarea name="projectIntro" id="projectIntro-ck" cols="30" rows="10">${project.projectIntro}</textarea>
+            </div>
+            <%-- 프로젝트 대표 이미지 --%>
+            <div class="editor-section" id="img-section">
+                <h2>프로젝트 대표 이미지 등록</h2>
+                <input type="file" id="file-upload">
+                <img src="${project.projectImage}" alt="" id="upload-img">
+            </div>
+            <%-- 프로젝트 내용--%>
+            <div class="editor-section">
+                <h2>프로젝트 내용</h2>
+                <textarea name="projectContent" id="projectContent-ck" cols="30" rows="10">${project.projectContent}</textarea>
+            </div>
 
-        <hr />
+            <%-- 예산 정보 섹션 --%>
+            <hr />
+            <%-- 프로젝트 목표금액 --%>
+            <div class="editor-section">
+                <h2>프로젝트 목표 금액</h2>
+                <input type="text" name="projectPrice" value="${project.projectPrice}">
+            </div>
+            <div>
+                <h2>프로젝트 예산</h2>
+                <textarea name="budgetPlan" id="budgetPlan-ck" cols="30" rows="10">${project.budgetPlan}</textarea>
+            </div>
 
-        <div class="editor-section">
-            <h2>프로젝트 목표 금액</h2>
-            <input type="text" name="projectPrice" value="${project.projectPrice}">
-        </div>
-        <div>
-            <h2>프로젝트 예산</h2>
-            <textarea name="budgetPlan" id="budgetPlan-ck" cols="30" rows="10">${project.budgetPlan}</textarea>
-        </div>
-
-        <hr />
-
-        <div class="editor-section">
-            <h2>프로젝트 일정</h2>
-            <textarea name="schedulePlan" id="schedulePlan-ck" cols="30" rows="10">${project.schedulePlan}</textarea>
-        </div>
-        <div class="editor-section">
-            <h2>오픈 예정일</h2>
-            <input type="date" name="openDate"
-                   value="<fmt:formatDate value="${project.openDate}" pattern="yyyy-MM-dd"/>">
-        </div>
-        <div class="editor-section">
-            <h2>종료 예정일</h2>
-            <input type="date" name="closeDate"
-                   value="<fmt:formatDate value="${project.closeDate}" pattern="yyyy-MM-dd"/>">
-        </div>
-        <div class="editor-section">
-            <h2>배송 예정일</h2>
-            <input type="date" name="deliveryDate"
-                   value="<fmt:formatDate value="${project.deliveryDate}" pattern="yyyy-MM-dd"/>">
-        </div>
-        <div class="editor-section">
-            <button type="submit">제출</button>
-            <button onclick="history.back()">취소</button>
-        </div>
+            <%-- 일정 정보 섹션 --%>
+            <hr />
+            <%-- 프로젝트 일정 --%>
+            <div class="editor-section">
+                <h2>프로젝트 일정</h2>
+                <textarea name="schedulePlan" id="schedulePlan-ck" cols="30" rows="10">${project.schedulePlan}</textarea>
+            </div>
+            <%-- 오픈 예정일 --%>
+            <div class="editor-section">
+                <h2>오픈 예정일</h2>
+                <input type="date" name="openDate"
+                       value="<fmt:formatDate value="${project.openDate}" pattern="yyyy-MM-dd"/>">
+            </div>
+            <%-- 종료 예정일 --%>
+            <div class="editor-section">
+                <h2>종료 예정일</h2>
+                <input type="date" name="closeDate"
+                       value="<fmt:formatDate value="${project.closeDate}" pattern="yyyy-MM-dd"/>">
+            </div>
+            <%-- 배송 예정일 --%>
+            <div class="editor-section">
+                <h2>배송 예정일</h2>
+                <input type="date" name="deliveryDate"
+                       value="<fmt:formatDate value="${project.deliveryDate}" pattern="yyyy-MM-dd"/>">
+            </div>
+            <%-- 제출 버튼 --%>
+            <div class="editor-section">
+                <button type="submit">제출</button>
+                <button onclick="history.back()">취소</button>
+            </div>
         </form>
     </div>
 </section>
 
+
 <script>
+    // ck 에디터 적용
     CKEDITOR.replace("projectIntro-ck");
     CKEDITOR.replace("projectContent-ck", {
         filebrowserUploadUrl: '/ck/upload'
