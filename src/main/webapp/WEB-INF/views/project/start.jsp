@@ -93,7 +93,7 @@
         // 작성중인 프로젝트로 이동
         $(".on-writing").click(function() {
             const projectNo = $(this).attr("data-projectNo")
-            location.href = "/project/editor/" + projectNo
+            location.href = "/project/editor/" + projectNo + "/basic"
         })
         // 프로젝트 생성
         $("#btn-create-project").click(function () {

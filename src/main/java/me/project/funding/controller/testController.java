@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
@@ -23,5 +24,11 @@ public class testController {
         message.setMessage("테스트 메시지");
         message.setTargetUser("test2");
         template.convertAndSend("/queue/user-" + message.getTargetUser(), message);
+    }
+
+    @GetMapping("/editor/test")
+    public ModelAndView test1() {
+        ModelAndView mav = new ModelAndView("project/editor/basic");
+        return mav;
     }
 }

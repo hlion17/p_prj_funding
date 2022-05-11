@@ -91,9 +91,32 @@ public class ProjectController {
      * @param projectNo 작성중인 프로젝트 식별자
      * @return 작성중인 프로젝트 정보
      */
-    @GetMapping("/project/editor/{projectNo}")
-    public ModelAndView projectEditorPage(@PathVariable int projectNo) {
+    @GetMapping("/project/editor/{projectNo}/{editorCategory}")
+    public ModelAndView projectEditorPage(@PathVariable(value = "projectNo") int projectNo
+            , @PathVariable("editorCategory") String editorCategory) {
         log.info("[/project/editor/{}][GET]", projectNo);
+        // 요청 파라미터 분석
+        log.info("projectNo: {}", projectNo);
+        log.info("editorCategory: {}", editorCategory);
+        String viewName = "";
+        switch (editorCategory) {
+            case "basic":
+                viewName = "project/editor/basic";
+                break;
+            case "content":
+                viewName = "project/editor/content";
+                break;
+            case "schedule":
+                viewName = "project/editor/schedule";
+                break;
+            case "budget":
+                viewName = "project/editor/budget";
+                break;
+            case "reward":
+                viewName = "project/editor/reward";
+                break;
+        }
+        log.info("viewName: {}", viewName);
 
         // 파라미터 검증
         if (projectNo < 1) {
@@ -101,7 +124,8 @@ public class ProjectController {
             throw new IllegalArgumentException("부적합한 프로젝트 식별자");
         }
 
-        ModelAndView mav = new ModelAndView("project/editor");
+        ModelAndView mav = new ModelAndView(viewName);
+//        ModelAndView mav = new ModelAndView("project/editor");
         Map<String, Object> model = mav.getModel();
 
         // 프로젝트 정보 가져오기

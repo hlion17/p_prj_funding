@@ -26,28 +26,6 @@
 
 <script>
     $(document).ready(function() {
-        // 불러온 데이터
-        // 기본정보
-        const loadProjectTitle = `${project.projectTitle}`
-        const loadCategoryId = `${project.categoryId}`
-        const loadProjectIntro = `${project.projectIntro}`
-        const loadProjectImage = `${project.projectImage}`
-        const loadProjectContent = `${project.projectContent}`
-        // 예산 정보
-        const loadProjectPrice = `${project.projectPrice}`
-        const loadBudgetPlan = `${project.budgetPlan}`
-        // 일정 정보
-        const loadSchedulePlan = `${project.schedulePlan}`
-        const loadOpenDate = `<fmt:formatDate value="${project.openDate}" pattern="yyyy-MM-dd"/>`
-        const loadCloseDate = `<fmt:formatDate value="${project.closeDate}" pattern="yyyy-MM-dd"/>`
-        const loadDeliveryDate = `<fmt:formatDate value="${project.deliveryDate}" pattern="yyyy-MM-dd"/>`
-
-        console.log(loadProjectTitle, loadCategoryId, loadProjectIntro
-            , loadProjectImage, loadProjectContent, loadProjectPrice
-            , loadBudgetPlan, loadSchedulePlan, loadOpenDate
-            , loadCloseDate, loadDeliveryDate )
-
-
         // 작성중인 프로젝트 카테고리 선택
         const select = document.querySelector("#select-category")
         for (i = 0; select.length; i++) {
@@ -88,97 +66,111 @@
             })
         })
 
-
-
-
-
-
-
-
-        // 데이터 변경 감지
-        // $("#test1").click(function () {
-        //     console.log("테스트")
-        //     const test = CKEDITOR.instances["projectContent-ck"].getData()
-        //     console.log(test)
-        // })
-
-        $("input[name]").change(function () {
-
-            var selectList = document.getElementById("select-category")
-
-            console.log(loadCategoryId)
-            console.log(selectList.options[selectList.selectedIndex].value)
-            console.log(loadProjectImage)
-            console.log($("#img-section img").prop("src"))
-            console.log(loadProjectPrice)
-            console.log($("input[name=projectPrice]").val())
-            console.log(loadOpenDate)
-            console.log($("input[name=openDate]").val())
-            console.log(loadCloseDate)
-            console.log($("input[name=closeDate]").val())
-            console.log(loadDeliveryDate)
-            console.log($("input[name=deliveryDate]").val())
-            if (loadProjectTitle != $("input[name=projectTitle]").val()) {
-                $("#test1").removeAttr("disabled")
-                return false
-            }
-            $("#test1").attr("disabled", "true")
-        })
-        // ckeditor 내용일치 검증
-        CKEDITOR.instances["projectIntro-ck"].on("instanceReady", function(){
-            this.document.on("keyup", function () {
-                if (loadProjectIntro != CKEDITOR.instances['projectIntro-ck'].getData()) {
-                    $("#test1").removeAttr("disabled")
-                    return false
-                }
-                $("#test1").attr("disabled", "true")
-            });
-        });
-        CKEDITOR.instances["projectContent-ck"].on("instanceReady", function(){
-            this.document.on("keyup", function () {
-                if (loadProjectContent != CKEDITOR.instances['projectContent-ck'].getData()) {
-                    $("#test1").removeAttr("disabled")
-                    return false
-                }
-                $("#test1").attr("disabled", "true")
-            });
-        });
-        CKEDITOR.instances["budgetPlan-ck"].on("instanceReady", function(){
-            this.document.on("keyup", function () {
-                if (loadBudgetPlan != CKEDITOR.instances['budgetPlan-ck'].getData()) {
-                    $("#test1").removeAttr("disabled")
-                    return false
-                }
-                $("#test1").attr("disabled", "true")
-            });
-        });
-        CKEDITOR.instances["schedulePlan-ck"].on("instanceReady", function(){
-            this.document.on("keyup", function () {
-                if (loadSchedulePlan != CKEDITOR.instances['schedulePlan-ck'].getData()) {
-                    $("#test1").removeAttr("disabled")
-                    return false
-                }
-                $("#test1").attr("disabled", "true")
-            });
-        });
-
-
-
-
-
-
-
     })
 </script>
 
+<%-- 에디터 내용 변경 감지 --%>
 <script>
-    $(document).ready(function () {
+$(document).ready(function () {
+    // 이전 작성 내용 상수값으로 기억
+    // 기본정보
+    const loadedProjectTitle = `${project.projectTitle}`
+    const loadedCategoryId = `${project.categoryId}`
+    const loadedProjectIntro = `${project.projectIntro}`
+    const loadedProjectImage = `http://${pageContext.request.getHeader("host")}${project.projectImage}`
+    // 프로젝트 내용
+    const loadedProjectContent = `${project.projectContent}`
+    // 예산 정보
+    const loadedProjectPrice = `${project.projectPrice}`
+    const loadedBudgetPlan = `${project.budgetPlan}`
+    // 일정 정보
+    const loadedSchedulePlan = `${project.schedulePlan}`
+    const loadedOpenDate = `<fmt:formatDate value="${project.openDate}" pattern="yyyy-MM-dd"/>`
+    const loadedCloseDate = `<fmt:formatDate value="${project.closeDate}" pattern="yyyy-MM-dd"/>`
+    const loadedDeliveryDate = `<fmt:formatDate value="${project.deliveryDate}" pattern="yyyy-MM-dd"/>`
+    // name 속성이 있는 모든 요소에 변경감지 이벤트 부여
+    // ** input 태그 type=text 에 onchange 이벤트가 걸리지 않았던 이유는
+    // ** input 태그 type=text 에 blur 된 이후 onchange 이벤트가 걸리기 때문이라고 한다.
+    // ** [참고]: https://karismamun.tistory.com/66
+    $("[name], #upload-img").on("change keyup load", function () {
+        // 변경된 작성 내용
+        // 기본정보
+        let editedProjectTitle = $("input[name=projectTitle]").val()
+        let editedCategoryId = $("#select-category option:selected").val()
+        let editedProjectImage = $("#img-section img").prop("src")
+        // 예산 정보
+        let editedProjectPrice = $("input[name=projectPrice]").val()
+        // 일정 정보
+        let editedOpenDate = $("input[name=openDate]").val()
+        let editedCloseDate = $("input[name=closeDate]").val()
+        let editedDeliveryDate = $("input[name=deliveryDate]").val()
+        // 불러온 내용에서 변경된 사항이 있는 경우
+        if (loadedProjectTitle != editedProjectTitle
+            || loadedCategoryId != editedCategoryId
+            || loadedProjectImage != editedProjectImage
+            || loadedProjectPrice != editedProjectPrice
+            || loadedOpenDate != editedOpenDate
+            || loadedCloseDate != editedCloseDate
+            || loadedDeliveryDate != editedDeliveryDate) {
 
+            $("#save-project").removeAttr("disabled")
+            return false
+        } else {
+            $("#save-project").attr("disabled", "true")
+        }
     })
+    // ckeditor 내용일치 검증
+    // 프로젝트 소개
+    CKEDITOR.instances["projectIntro-ck"].on("instanceReady", function(){
+        this.document.on("keyup", function () {
+            let editedProjectIntro = CKEDITOR.instances['projectIntro-ck'].getData()
+            if (loadedProjectIntro != editedProjectIntro) {
+                $("#save-project").removeAttr("disabled")
+                return false
+            }
+            $("#save-project").attr("disabled", "true")
+        });
+    });
+    // 프로젝트 내용
+    CKEDITOR.instances["projectContent-ck"].on("instanceReady", function(){
+        this.document.on("keyup", function () {
+            let editedProjectContent = CKEDITOR.instances['projectContent-ck'].getData()
+            if (loadedProjectContent != editedProjectContent) {
+                $("#save-project").removeAttr("disabled")
+                return false
+            }
+            $("#save-project").attr("disabled", "true")
+        });
+    });
+    // 프로젝트 예산
+    CKEDITOR.instances["budgetPlan-ck"].on("instanceReady", function(){
+        this.document.on("keyup", function () {
+            let editedBudgetPlan = CKEDITOR.instances['budgetPlan-ck'].getData()
+            if (loadedBudgetPlan != editedBudgetPlan) {
+                $("#save-project").removeAttr("disabled")
+                return false
+            }
+            $("#save-project").attr("disabled", "true")
+        });
+    });
+    // 프로젝트 일정
+    CKEDITOR.instances["schedulePlan-ck"].on("instanceReady", function(){
+        this.document.on("keyup", function () {
+            let editedSchedulePlan = CKEDITOR.instances['schedulePlan-ck'].getData()
+            if (loadedSchedulePlan != editedSchedulePlan) {
+                $("#save-project").removeAttr("disabled")
+                return false
+            }
+            $("#save-project").attr("disabled", "true")
+        });
+    });
+})
+
 </script>
 
 <section>
-    <button id="test1" disabled="true" style="position: fixed">테스트</button>
+    <button id="save-project" disabled="true">테스트</button>
+    <button onclick="location.href='/editor/test'">기본정보 페이지 이동</button>
     <div class="container">
         <form action="/project/update" method="post">
             <%-- 프로젝트 식별값 --%>
