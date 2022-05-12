@@ -30,4 +30,7 @@ public class ProjectDTO {
     // Member 테이블과 조인할 경우
     @ToString.Exclude
     MemberDTO member = new MemberDTO();
+    // reward 테이블과 조인할 경우
+    @ToString.Exclude
+    RewardDTO reward = new RewardDTO();
 }

@@ -5,4 +5,24 @@
 
 <mapper namespace="me.project.funding.mapper.RewardMapper">
 
+    <insert id="insert" parameterType="me.project.funding.dto.RewardDTO">
+        <selectKey order="BEFORE" resultType="int" keyProperty="rewardNo" >
+            select reward_seq.nextval from dual
+        </selectKey>
+        insert into reward(reward_no, project_no, reward_amount, reward_price, reward_name, reward_intro, reward_state)
+        values(#{rewardNo}, #{projectNo}, #{rewardAmount}, #{rewardPrice}, #{rewardName}, #{rewardIntro}, #{rewardState})
+    </insert>
+
+    <select id="findAllByProjectNo" resultType="me.project.funding.dto.RewardDTO" parameterType="int">
+        select reward_no, project_no, reward_price, reward_amount, reward_name, reward_intro, reward_state
+        from reward
+        where project_no = #{projectNo}
+        order by reward_no
+    </select>
+
+    <delete id="delete" parameterType="int">
+        delete reward
+        where reward_no = #{rewardNo}
+    </delete>
+
 </mapper>
