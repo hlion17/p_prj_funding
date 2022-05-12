@@ -73,11 +73,12 @@
         margin: 0 auto;
         position: relative;
     }
-    #header-nav ul > li{
+    #header-nav ul > li {
         display: inline-block;
         height: 40px;
         margin-right: 20px;
         position: relative;
+        cursor: pointer;
     }
     /* 네비게이션 메뉴 선택 스타일 */
     .nav-select {
