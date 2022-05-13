@@ -25,4 +25,23 @@
         where reward_no = #{rewardNo}
     </delete>
 
+    <insert id="insertOption" parameterType="me.project.funding.dto.RewardOptionDTO">
+        <selectKey order="BEFORE" resultType="int" keyProperty="optionNo">
+            select reward_option_seq.nextval from dual
+        </selectKey>
+        insert into reward_option (option_no, option_name, project_no)
+        values (#{optionNo}, #{optionName}, #{projectNo})
+    </insert>
+
+    <select id="findAllOptions" resultType="me.project.funding.dto.RewardOptionDTO" parameterType="int">
+        select * from reward_option
+        where project_no = #{projectNo}
+        order by option_no
+    </select>
+
+    <delete id="deleteOption" parameterType="int">
+        delete reward_option
+        where option_no = #{optionNo}
+    </delete>
+
 </mapper>

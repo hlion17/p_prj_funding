@@ -61,6 +61,7 @@
         position: sticky;
         top: 105px;
         left: 0;
+        z-index: 999;
         background: white;
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.04);
     }
@@ -124,6 +125,9 @@
         flex-grow: 1;
         padding: 20px 60px;
     }
+    .editor-section-right {
+        margin-top: 65px;
+    }
     .editor-section-right p {
         font-weight: 700;
         font-size: 0.8em;
@@ -138,21 +142,209 @@
         color: white;
     }
 
+    /* 두 번쨰 네비게이션 스타일 */
+    #second-nav-wrapper {
+        display: flex;
+        justify-content: center;
+        /*width: 100%;*/
+        position: sticky;
+        top: 165px;
+        left: 0;
+        z-index: 999;
+        background: white;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.04);
+        border-top: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    #second-nav-wrapper > div {
+        width: 1080px;
+    }
+    #second-nav-wrapper ul {
+        display: flex;
+        height: 60px;
+        align-items: center;
+        padding: 0;
+        margin: 0 auto;
+        position: relative;
+    }
+    #second-nav-wrapper ul > li {
+        display: inline-block;
+        height: 40px;
+        margin-right: 20px;
+        padding: 7px 0;
+        position: relative;
+        cursor: pointer;
+    }
+    #second-nav-wrapper li > i {
+        padding-right: 10px;
+        font-size: 12px;
+    }
+    /* 리워드 2차 네비게이션 탭 아이콘 색 변경 */
+    .active_icon {
+        color: darkorange;
+    }
+
+    /* 리워드 옵션 페이지 */
+    #item-make {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 350px;
+        padding: 40px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    #item-make .item-make-component:first-child {
+        border-bottom: 1px solid #ccc;
+    }
+    #item-make .item-make-component:nth-child(2) > input {
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
+    }
+    .item-make-component p:nth-child(1) {
+        font-size: 16px;
+        font-weight: 700;
+    }
+    .item-make-component p:nth-child(2) {
+        font-size: 14px;
+        color: rgb(109, 109, 109);
+    }
+    #btn-option-save {
+        width: 100px;
+    }
+    .my-item {
+        display: flex;
+        justify-content: space-between;
+        width: 250px;
+        padding: 20px;
+        margin: 20px;
+        position: relative;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .my-item p {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+    }
+    .my-item > button {
+        padding:5px 10px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border:1px solid #ccc;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+
 </style>
 
-<%-- ck Editor Basic load --%>
-<script src="/resources/ckeditor_basic/ckeditor.js"></script>
-
+<%-- 리워드 페이지 자바스크립트 --%>
 <script>
-    $(document).ready(function () {
-        // ck Editor 적용
-        CKEDITOR.replace("schedulePlan-ck");
-    })
     // 네비게이션 메뉴 이동
     function navButton(viewName) {
         const url = "/project/editor/${project.projectNo}/" + viewName
         location.href=url
     }
+    // 옵션 조회
+    function getOptions() {
+        $.ajax({
+            type: "GET"
+            , url: "/options"
+            , dataType: "JSON"
+            , data: {projectNo: "${project.projectNo}"}
+            , success: function(res) {
+                // 리워드 옵션 요소를 화면에 뿌려준다.
+                $("#item-area li").remove()
+                for (i = 0; i < res.list.length; i++) {
+                    const obj = $("#item-template").clone()
+                    obj.removeAttr("id")
+                    obj.css("display", "block")
+                    obj.find("p").text(res.list[i].optionName)
+                    obj.find("button").attr("data-optionNo", res.list[i].optionNo)
+                    obj.addClass("my-item")
+                    const target = $("#item-area")
+                    target.append(obj)
+                }
+            }
+            , error: function (jqXHR) {
+                console.log("ajax 실패")
+                console.log(jqXHR.status)
+                console.log(jqXHR.statusText)
+                // console.log(jqXHR.responseText)
+                console.log(jqXHR.readyState)
+            }
+
+        })
+    }
+    // 옵션 삭제
+    function deleteOption(target) {
+        const optionNo = target.getAttribute("data-optionNo")
+        $.ajax({
+            type: "POST"
+            , url: "/options/delete"
+            , dataType: "JSON"
+            , data: {optionNo: optionNo}
+            , success: function (res) {
+                console.log("ajax 성공: ", res)
+                //location.reload()
+                getOptions()
+            }
+            , error: function (e) {
+                console.log("ajax 실패: ", e)
+            }
+        })
+    }
+    // 옵션 생성
+    function createOption() {
+        const itemName = $("input[name=optionName]").val()
+        const obj = $("#item-template").clone()
+
+        $.ajax({
+            type: "POST"
+            , url: "/option/create"
+            , dataType: "JSON"
+            , data: {optionName: itemName, projectNo: ${project.projectNo}}
+            , success: function(res) {
+                obj.removeAttr("id")
+                obj.css("display", "block")
+                obj.find("p").text(itemName)
+                obj.addClass("my-item")
+                const target = $("#item-area")
+                target.append(obj)
+
+                $("input[name=optionName]").val("")
+            }
+            , error: function(jqXHR) {
+                console.log("ajax 실패", jqXHR)
+                console.log("ajax 실패")
+                console.log(jqXHR.status)
+                console.log(jqXHR.statusText)
+                // console.log(jqXHR.responseText)
+                console.log(jqXHR.readyState)
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        // 페이지 로드시 프로젝트의 리워드 옵션 조회
+        getOptions()
+        // 만들기 버튼 클릭시 옵션 생성
+        $("#btn-option-save").click(function() {
+            createOption()
+        })
+        // 옵션 생성 input enter event
+        $("input[name=optionName]").on("keydown", function (e) {
+            if (e.keyCode == 13) {
+                createOption()
+            }
+        })
+    })// document onload 마지막
+
+
 </script>
 
 <%-- 프로젝트 내용 변경 감지 --%>
@@ -185,20 +377,6 @@
                 $("#save-project").removeClass("save-project")
             }
         })
-        // 프로젝트 소개
-        CKEDITOR.instances["schedulePlan-ck"].on("instanceReady", function(){
-            this.document.on("keyup", function () {
-                console.log("test")
-                let editedSchedulePlan = CKEDITOR.instances['schedulePlan-ck'].getData()
-                if (loadedSchedulePlan != editedSchedulePlan) {
-                    $("#save-project").removeAttr("disabled")
-                    $("#save-project").addClass("save-project")
-                    return false
-                }
-                $("#save-project").attr("disabled", "disabled")
-                $("#save-project").removeClass("save-project")
-            });
-        });
         // document onload 마지막
     })
 
@@ -232,7 +410,14 @@
             </ul>
         </div>
     </div>
-    <div id="header-wrapper">
+    <%-- 에디터 2차 네비게이션 --%>
+    <div id="second-nav-wrapper">
+        <div id="second-nav">
+            <ul>
+                <li onclick=""><i class="fa-solid fa-gift"></i>리워드</li>
+                <li onclick=""><i class="fa-solid fa-bars"></i>옵션</li>
+            </ul>
+        </div>
     </div>
     <%-- 에디터 바디 --%>
     <div id="editor-body">
@@ -242,17 +427,34 @@
                 <div class="editor-section-left">
                     <div class="info-title"><p>내가 만든 선물</p></div>
                     <div class="info-content">
-                        <p>선물 리스트 표시</p>
+                        <ul id="item-area">
+                            <%-- 옵션 생성 영역 --%>
+                        </ul>
                     </div>
                 </div>
                 <div class="editor-section-right">
-                    <div>
-                        <p>선물 만들기 들어갈 자리</p>
-                        <input type="text" name="projectTitle"
-                               value="" placeholder="">
+                    <div id="item-make">
+                        <div class="item-make-component">
+                            <p>아이템 만들기</p>
+                            <p>아이템은 선물에 포함되는 구성 품목을 말합니다. 특별한 물건부터 의미있는 경험까지 선물을 구성할 아이템을 만들어 보세요.</p>
+                        </div>
+                        <div class="item-make-component">
+                            <p>아이템 이름</p>
+                            <input type="text" name="optionName" placeholder="아이템 이름을 입력해주세요">
+                        </div>
+                        <div class="item-make-component">
+                            <button id="btn-option-save">만들기</button>
+                        </div>
                     </div>
                 </div>
             </section>
+
+            <%-- 옵션 카드 템플릿 --%>
+            <li id="item-template" style="display: none;">
+                <div><p></p></div>
+                <button class="btn-delete-option" onclick="deleteOption(this)"><i class="fa-solid fa-trash-can"></i></button>
+            </li>
+
         </div>
     </div>
 </div>

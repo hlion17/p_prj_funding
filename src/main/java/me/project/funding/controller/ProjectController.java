@@ -99,6 +99,7 @@ public class ProjectController {
         log.info("projectNo: {}", projectNo);
         log.info("editorCategory: {}", editorCategory);
         String viewName = "";
+//        System.out.println("리워드 카테고리 값: " + rewardCategory);
         switch (editorCategory) {
             case "basic":
                 viewName = "project/editor/basic";

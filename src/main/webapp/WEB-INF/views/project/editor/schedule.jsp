@@ -253,7 +253,7 @@
                     <div class="info-content">
                         <p>프로젝트 상세 진행일정에 대해서 적어주세요</p>
                     </div>
-                2</div>
+                </div>
                 <div class="editor-section-right">
                     <div>
                         <textarea name="schedulePlan" id="schedulePlan-ck" cols="30" rows="10">${project.schedulePlan}</textarea>

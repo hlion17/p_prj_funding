@@ -1,6 +1,7 @@
 package me.project.funding.service.face;
 
 import me.project.funding.dto.RewardDTO;
+import me.project.funding.dto.RewardOptionDTO;
 
 import java.util.List;
 
@@ -18,4 +19,26 @@ public interface RewardService {
      * @return 조회된 리워드 리스트
      */
     List<RewardDTO> getAllRewardByProjectNo(int projectNo);
+
+    /**
+     * 옵션 생성
+     * @param option 생성할 옵션 이름이 담긴 DTO
+     * @return 생성 결과 (success, fail)
+     */
+    String createOption(RewardOptionDTO option);
+
+    /**
+     * 프로젝트에 있는 리워드를 위한 옵션들을 불러온다.
+     * @param projectNo 프로젝트 식별값
+     * @return 옵션 리스트 반환
+     */
+    List<RewardOptionDTO> getRewardOptions(int projectNo);
+
+    /**
+     * 옵션을 삭제한다.
+     * @param optionNo 삭제할 식별값
+     */
+    void deleteOption(int optionNo);
+
+    //RewardOptionDTO findOptionByNo(RewardOptionDTO option);
 }

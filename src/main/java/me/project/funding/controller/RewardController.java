@@ -2,11 +2,18 @@ package me.project.funding.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import me.project.funding.dto.RewardDTO;
+import me.project.funding.dto.RewardOptionDTO;
 import me.project.funding.service.face.RewardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -42,4 +49,38 @@ public class RewardController {
             return mav;
         }
     }
+
+    @PostMapping("/option/create")
+    @ResponseBody
+    public Map<String, String> createOption(RewardOptionDTO option) {
+        log.info("[/option/create][POST]");
+        log.info("요청 파라미터: {}", option);
+        Map<String, String> resultMap = new HashMap<>();
+        // 옵션 생성 결과(success, fail)
+        String result = rewardService.createOption(option);
+
+        // json 으로 옵션 생성 결과 반환
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    @GetMapping("/options")
+    public ModelAndView getOptions(int projectNo) {
+        log.info("[/options][GET]");
+        ModelAndView mav = new ModelAndView("jsonView");
+        List<RewardOptionDTO> list = rewardService.getRewardOptions(projectNo);
+        log.info("옵션 조회 결과: {}", list);
+        mav.addObject("list",list);
+        return mav;
+    }
+
+    @PostMapping("/options/delete")
+    public ModelAndView deleteOption(int optionNo) {
+        log.info("[/options/delete][POST]");
+        log.info("요청 파라미터: {}", optionNo);
+        ModelAndView mav = new ModelAndView("jsonView");
+        rewardService.deleteOption(optionNo);
+        return mav;
+    }
+
 }

@@ -1,6 +1,7 @@
 package me.project.funding.mapper;
 
 import me.project.funding.dto.RewardDTO;
+import me.project.funding.dto.RewardOptionDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -27,4 +28,25 @@ public interface RewardMapper {
      * @return 삭제 결과
      */
     int delete(int rewardNo);
+
+    /**
+     * DB 리워드 옵션 생성
+     * @param option 옵션의 이름이 담긴 DTO
+     * @return insert 결과
+     */
+    int insertOption(RewardOptionDTO option);
+
+    /**
+     * 프로젝트 리워드 옵션을 모두 가져온다.
+     * @param projectNo 프로젝트 식별값
+     * @return 옵션 리스트
+     */
+    List<RewardOptionDTO> findAllOptions(int projectNo);
+
+    /**
+     * 옵션 식별값을 이용하여 옵션 정보 삭제
+     * @param optionNo 옵션의 식별값
+     * @return DB delete 결과
+     */
+    int deleteOption(int optionNo);
 }

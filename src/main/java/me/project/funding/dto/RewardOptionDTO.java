@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public class RewardOptionDTO {
     private int optionNo;
-    private int rewardNo;
     private String optionName;
     private int optionCnt;
+    private int projectNo;
 }
