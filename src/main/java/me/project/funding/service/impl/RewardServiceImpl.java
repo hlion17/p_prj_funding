@@ -52,4 +52,19 @@ public class RewardServiceImpl implements RewardService {
             log.error("옵션 삭제 실패");
         }
     }
+
+    @Override
+    public List<RewardDTO> getRewards(int projectNo) {
+        return rewardMapper.findAllRewards(projectNo);
+    }
+
+    @Override
+    public void deleteReward(int rewardNo) {
+        int result = rewardMapper.delete(rewardNo);
+        if (result == 1) {
+            log.info("리워드 삭제 성공");
+        } else {
+            log.error("리워드 삭제 실패");
+        }
+    }
 }

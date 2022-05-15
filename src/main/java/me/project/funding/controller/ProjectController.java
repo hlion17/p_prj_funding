@@ -116,6 +116,10 @@ public class ProjectController {
             case "reward":
                 viewName = "project/editor/reward";
                 break;
+            case "reward_option":
+                System.out.println("옵션 페이지");
+                viewName = "project/editor/reward_option";
+                break;
         }
         log.info("viewName: {}", viewName);
 

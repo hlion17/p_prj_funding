@@ -9,8 +9,8 @@
         <selectKey order="BEFORE" resultType="int" keyProperty="rewardNo" >
             select reward_seq.nextval from dual
         </selectKey>
-        insert into reward(reward_no, project_no, reward_amount, reward_price, reward_name, reward_intro, reward_state)
-        values(#{rewardNo}, #{projectNo}, #{rewardAmount}, #{rewardPrice}, #{rewardName}, #{rewardIntro}, #{rewardState})
+        insert into reward(reward_no, project_no, reward_amount, reward_price, reward_name, reward_intro, reward_state, reward_content)
+        values(#{rewardNo}, #{projectNo}, #{rewardAmount}, #{rewardPrice}, #{rewardName}, #{rewardIntro}, #{rewardState}, #{rewardContent})
     </insert>
 
     <select id="findAllByProjectNo" resultType="me.project.funding.dto.RewardDTO" parameterType="int">
@@ -43,5 +43,20 @@
         delete reward_option
         where option_no = #{optionNo}
     </delete>
+
+    <select id="findAllRewards" parameterType="int" resultType="me.project.funding.dto.RewardDTO">
+        select
+               reward_no,
+               project_no,
+               reward_price,
+               reward_amount,
+               reward_name,
+               reward_intro,
+               reward_state,
+               reward_content
+        from reward
+        where project_no = #{projectNo}
+        order by reward_no
+    </select>
 
 </mapper>

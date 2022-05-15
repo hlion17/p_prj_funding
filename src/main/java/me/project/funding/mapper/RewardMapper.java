@@ -49,4 +49,11 @@ public interface RewardMapper {
      * @return DB delete 결과
      */
     int deleteOption(int optionNo);
+
+    /**
+     * 리워드 목록 조회
+     * @param projectNo 프로젝트 식별값
+     * @return 조회된 리워드 목록
+     */
+    List<RewardDTO> findAllRewards(int projectNo);
 }

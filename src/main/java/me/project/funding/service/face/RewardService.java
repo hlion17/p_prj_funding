@@ -40,5 +40,18 @@ public interface RewardService {
      */
     void deleteOption(int optionNo);
 
+    /**
+     * 리워드 목록 조회
+     * @param projectNo 프로젝트 식별값
+     * @return 리워드 목록
+     */
+    List<RewardDTO> getRewards(int projectNo);
+
+    /**
+     * 리워드 삭제
+     * @param rewardNo 삭제할 리워드 식별값
+     */
+    void deleteReward(int rewardNo);
+
     //RewardOptionDTO findOptionByNo(RewardOptionDTO option);
 }

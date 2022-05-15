@@ -74,6 +74,16 @@ public class RewardController {
         return mav;
     }
 
+    @GetMapping("/rewards")
+    public ModelAndView getRewards(int projectNo) {
+        log.info("[/rewards][GET]");
+        ModelAndView mav = new ModelAndView("jsonView");
+        List<RewardDTO> list = rewardService.getRewards(projectNo);
+        log.info("리워드 조회 결과: {}", list);
+        mav.addObject("list",list);
+        return mav;
+    }
+
     @PostMapping("/options/delete")
     public ModelAndView deleteOption(int optionNo) {
         log.info("[/options/delete][POST]");
@@ -83,4 +93,12 @@ public class RewardController {
         return mav;
     }
 
+    @PostMapping("/rewards/delete")
+    public ModelAndView deleteReward(int rewardNo) {
+        log.info("[/rewards/delete][POST]");
+        log.info("요청 파라미터: {}", rewardNo);
+        ModelAndView mav = new ModelAndView("jsonView");
+        rewardService.deleteReward(rewardNo);
+        return mav;
+    }
 }

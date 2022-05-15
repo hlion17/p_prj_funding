@@ -13,6 +13,7 @@ public class RewardDTO {
     private String rewardName;
     private String rewardIntro;
     private int rewardState;
+    private String rewardContent;
 
     // Project 테이블과 조인할 경우
 //    @ToString.Exclude

@@ -188,11 +188,14 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 350px;
+        /*height: 350px;*/
         padding: 40px;
         border: 1px solid rgba(0, 0, 0, 0.04);
         background: white;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .item-make-component {
+        margin: 20px 0;
     }
     #item-make .item-make-component:first-child {
         border-bottom: 1px solid #ccc;
@@ -239,6 +242,62 @@
         font-weight: 700;
     }
 
+    /* 리워드 페이지 아이콘 */
+    #second-nav ul > li:nth-child(1) i {
+        color: darkorange;
+    }
+    /* 리워드 옵션 */
+    #reward-option-template {
+        display: none;
+    }
+    .reward-option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 80%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .reward-option p {
+        margin: 0;
+    }
+    .reward-option p {
+    }
+    /* 생성된 리워드 */
+    #my-reward-template {
+        display: none;
+    }
+    .my-reward {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 250px;
+        padding: 20px;
+        margin: 20px;
+        position: relative;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .my-reward div:first-child {
+        margin-bottom: 10px;
+    }
+    .my-reward div:first-child p {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+    }
+    .my-reward > button {
+        padding:5px 10px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border:1px solid #ccc;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
 
 </style>
 
@@ -257,17 +316,12 @@
             , dataType: "JSON"
             , data: {projectNo: "${project.projectNo}"}
             , success: function(res) {
-                // 리워드 옵션 요소를 화면에 뿌려준다.
-                $("#item-area li").remove()
+                const optionList = $("#option-list")
+                // 옵션 리스트 select 태그에 출력
                 for (i = 0; i < res.list.length; i++) {
-                    const obj = $("#item-template").clone()
-                    obj.removeAttr("id")
-                    obj.css("display", "block")
-                    obj.find("p").text(res.list[i].optionName)
-                    obj.find("button").attr("data-optionNo", res.list[i].optionNo)
-                    obj.addClass("my-item")
-                    const target = $("#item-area")
-                    target.append(obj)
+                    optionList.append($("<option>",
+                        {value: res.list[i].optionNo
+                            , text: res.list[i].optionName}))
                 }
             }
             , error: function (jqXHR) {
@@ -280,43 +334,69 @@
 
         })
     }
-    // 옵션 삭제
+    // 옵션 삭제(HTML 요소 삭제)
     function deleteOption(target) {
-        const optionNo = target.getAttribute("data-optionNo")
+        const targetOption = $(target).parents(".reward-option")
+        targetOption.remove()
+    }
+    // 리워드 조회
+    function getRewards() {
         $.ajax({
-            type: "POST"
-            , url: "/options/delete"
+            type: "GET"
+            , url: "/rewards"
             , dataType: "JSON"
-            , data: {optionNo: optionNo}
-            , success: function (res) {
-                console.log("ajax 성공: ", res)
-                //location.reload()
-                getOptions()
+            , data: {projectNo: "${project.projectNo}"}
+            , success: function(res) {
+                // 화면에 표시된 리워드 목록 제거
+                $("#item-area li").remove()
+                // 조회 결과 리워드 목록랜더링
+                for (var i in res.list) {
+                    renderReward(
+                        res.list[i].rewardPrice
+                        , res.list[i].rewardIntro
+                        , res.list[i].rewardContent
+                        , res.list[i].rewardNo)
+                }
             }
-            , error: function (e) {
-                console.log("ajax 실패: ", e)
+            , error: function (jqXHR) {
+                console.log("ajax 실패")
+                console.log(jqXHR.status)
+                console.log(jqXHR.statusText)
+                // console.log(jqXHR.responseText)
+                console.log(jqXHR.readyState)
             }
+
         })
     }
-    // 옵션 생성
-    function createOption() {
-        const itemName = $("input[name=optionName]").val()
-        const obj = $("#item-template").clone()
+    // 리워드 생성
+    function createReward() {
+        // 삽입 할 리워드 데이터
+        const rewardPrice = $("input[name=rewardPrice]").val()
+        const rewardInfo = $("input[name=rewardInfo]").val()
+        // 옵션 데이터
+        const option = $(".reward-option")
+        let rewardContent = ""
+        for (i = 0; i < option.length; i++) {
+            const countVal = $(option[i]).children().eq(1).find("input").val()
+            rewardContent += $(option[i]).find("p").text() + " x" + countVal + ";"
+        }
 
         $.ajax({
             type: "POST"
-            , url: "/option/create"
+            , url: "/reward/create"
             , dataType: "JSON"
-            , data: {optionName: itemName, projectNo: ${project.projectNo}}
+            , data: {
+                projectNo: ${project.projectNo}
+                , rewardPrice: rewardPrice
+                // DB에 reward_intro 인데 지금 것 rewardInfo 로 작업해서 차이가 발생
+                , rewardIntro: rewardInfo
+                , rewardContent: rewardContent
+            }
             , success: function(res) {
-                obj.removeAttr("id")
-                obj.css("display", "block")
-                obj.find("p").text(itemName)
-                obj.addClass("my-item")
-                const target = $("#item-area")
-                target.append(obj)
-
-                $("input[name=optionName]").val("")
+                if (res.result == 1) {
+                    // 서버에서 리워드 목록 조회
+                    getRewards()
+                }
             }
             , error: function(jqXHR) {
                 console.log("ajax 실패", jqXHR)
@@ -328,19 +408,78 @@
             }
         })
     }
+    // 리워드 삭제
+    function deleteReward(target) {
+        const rewardNo = target.getAttribute("data-rewardNo")
+        $.ajax({
+            type: "POST"
+            , url: "/rewards/delete"
+            , dataType: "JSON"
+            , data: {rewardNo: rewardNo}
+            , success: function (res) {
+                console.log("ajax 성공: ", res)
+                //location.reload()
+                getRewards()
+            }
+            , error: function (e) {
+                console.log("ajax 실패: ", e)
+            }
+        })
+    }
+    // 선택된 옵션 화면에 표시
+    function renderOptions(select) {
+        // 선택된 option 이름값
+        const option = select.options[select.selectedIndex].text
+        // 옵션 템플릿 복제
+        const template = $("#reward-option-template").clone()
+        template.removeAttr("id")
+        template.css("display", "flex")
+        template.addClass("reward-option")
+        template.find("p").text(option)  // 템플릿에 선택된 option 값 넣기
+        // 옵션 영역에 요소 표시
+        const area = $("#selected-option-area")
+        area.append(template)
+    }
+    // 리워드 요소 랜더링
+    function renderReward(rewardPrice, rewardInfo, rewardContent, rewardNo) {
+        // 템플릿 복제
+        const template = $("#my-reward-template").clone()
+        template.removeAttr("id")
+        template.css("display", "flex")
+        template.addClass("my-reward")
+        // 리워드 금액, 리워드 설명 데이터 삽입
+        template.children().eq(0).find("p").text(rewardPrice)
+        template.children().eq(1).find("p").text(rewardInfo)
+        // 리워드 옵션 데이터 삽입
+        const contentArr = rewardContent.split(";")
+        for (let i in contentArr) {
+            if (contentArr[i] != "") {
+                const li = $("<li>" + contentArr[i] +"</li>");
+                template.children().eq(1).find("ul").append(li)
+            }
+        }
+
+        // 리워드 식별값 주입
+        template.find("button").attr("data-rewardNo", rewardNo)
+
+        // 리워드 생성 결과 영역에 데이터 표시
+        const result = $("#item-area")
+        result.append(template)
+    }
 
     $(document).ready(function () {
+        // 페이지 로드시 프로젝트 리워드 조회
+        getRewards()
         // 페이지 로드시 프로젝트의 리워드 옵션 조회
         getOptions()
-        // 만들기 버튼 클릭시 옵션 생성
+        // 만들기 버튼 클릭시 리워드 카드 생성
         $("#btn-option-save").click(function() {
-            createOption()
-        })
-        // 옵션 생성 input enter event
-        $("input[name=optionName]").on("keydown", function (e) {
-            if (e.keyCode == 13) {
-                createOption()
-            }
+            // 리워드 카드 생성
+            createReward()
+            // 데이터 칸 초기화
+            $("input[name=rewardPrice]").val("")
+            $("input[name=rewardInfo]").val("")
+            $(".reward-option").remove()
         })
     })// document onload 마지막
 
@@ -414,8 +553,8 @@
     <div id="second-nav-wrapper">
         <div id="second-nav">
             <ul>
-                <li onclick=""><i class="fa-solid fa-gift"></i>리워드</li>
-                <li onclick=""><i class="fa-solid fa-bars"></i>옵션</li>
+                <li onclick="location.href='/project/editor/${project.projectNo}/reward'"><i class="fa-solid fa-gift"></i>리워드</li>
+                <li onclick="location.href='/project/editor/${project.projectNo}/reward_option'"><i class="fa-solid fa-bars"></i>옵션</li>
             </ul>
         </div>
     </div>
@@ -428,19 +567,33 @@
                     <div class="info-title"><p>내가 만든 선물</p></div>
                     <div class="info-content">
                         <ul id="item-area">
-                            <%-- 옵션 생성 영역 --%>
+                            <%-- 리워드 생성 영역 --%>
                         </ul>
                     </div>
                 </div>
                 <div class="editor-section-right">
                     <div id="item-make">
                         <div class="item-make-component">
-                            <p>아이템 만들기</p>
-                            <p>아이템은 선물에 포함되는 구성 품목을 말합니다. 특별한 물건부터 의미있는 경험까지 선물을 구성할 아이템을 만들어 보세요.</p>
+                            <p>리워드 만들기</p>
+                            <p>선물은 후원자에게 프로젝트의 가치를 전달하는 수단입니다. 다양한 금액대로 여러 개의 선물을 만들어주세요. 펀딩 성공률이 높아지고, 더 많은 후원 금액을 모금할 수 있어요.</p>
                         </div>
                         <div class="item-make-component">
-                            <p>아이템 이름</p>
-                            <input type="text" name="optionName" placeholder="아이템 이름을 입력해주세요">
+                            <p>리워드 금액</p>
+                            <input type="text" name="rewardPrice" placeholder="리워드 금액을 입력해주세요">
+                        </div>
+                        <div class="item-make-component">
+                            <p>리워드 설명을 작성해주세요</p>
+                            <input type="text" name="rewardInfo" placeholder="리워드에 대한 설명을 작성해주세요">
+                        </div>
+                        <div class="item-make-component">
+                            <p>옵션을 선택해주세요</p>
+                            <select id="option-list" onchange="renderOptions(this)">
+                                <option disabled selected="selected">옵션선택</option>
+                                <%-- 옵션 생성 영역 --%>
+                            </select>
+                            <div id="selected-option-area">
+                                <%-- 선택된 옵션 표시 영역 --%>
+                            </div>
                         </div>
                         <div class="item-make-component">
                             <button id="btn-option-save">만들기</button>
@@ -449,10 +602,29 @@
                 </div>
             </section>
 
+            <%-- 템플릿 코드들 --%>
+
             <%-- 옵션 카드 템플릿 --%>
             <li id="item-template" style="display: none;">
                 <div><p></p></div>
                 <button class="btn-delete-option" onclick="deleteOption(this)"><i class="fa-solid fa-trash-can"></i></button>
+            </li>
+            <%-- 옵션 표시 템플릿 --%>
+            <div id="reward-option-template">
+                <div><p></p></div>
+                <div>
+                    <input type="number" value="1" min="1">
+                    <button onclick="deleteOption(this)">삭제</button>
+                </div>
+            </div>
+            <%-- 리워드 템플릿 --%>
+            <li id="my-reward-template" class="my-reward">
+                <div><p></p></div>
+                <div>
+                    <p></p>
+                    <ul></ul>
+                </div>
+                <button class="btn-delete-option" onclick="deleteReward(this)"><i class="fa-solid fa-trash-can"></i></button>
             </li>
 
         </div>
