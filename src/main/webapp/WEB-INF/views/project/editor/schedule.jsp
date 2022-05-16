@@ -215,7 +215,7 @@
         <div id="header-menu">
             <div onclick="location.href='/project/start'">&larr;</div>
             <div>
-                <button id="save-project" disabled onclick="">저장하기</button>
+                <button id="save-project" disabled onclick="submitButton()">저장하기</button>
             </div>
         </div>
     </div>

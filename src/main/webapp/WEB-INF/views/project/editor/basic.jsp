@@ -218,9 +218,8 @@
                     // 기존 이미지를 제거하고 업로드한 이미지로 변경
                     $("#uploaded-img").removeAttr("src")
                     $("#uploaded-img").attr("src", res.fileUrl)
-                    // 프로젝트 업데이트 요청시 저장할 변수 생성
-                    const input = $("<input type='hidden' name='projectImage'>")
-                    input.attr("value", res.fileUrl)
+                    // 프로젝트 업데이트 요청시 저장
+                    $("input[name=projectImage]").val(res.fileUrl)
                     $("#upload-result").append(input)
                 }
                 , error: function() {
@@ -402,6 +401,7 @@
                         <div id="upload-result">
                             <p>등록 될 이미지</p>
                             <img src="${project.projectImage}" alt="" id="uploaded-img">
+                            <input type="hidden" name="projectImage" value="${project.projectImage}">
                         </div>
                     </div>
                 </div>

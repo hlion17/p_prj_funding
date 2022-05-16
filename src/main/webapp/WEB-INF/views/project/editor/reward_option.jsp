@@ -314,14 +314,15 @@
             , dataType: "JSON"
             , data: {optionName: itemName, projectNo: ${project.projectNo}}
             , success: function(res) {
-                obj.removeAttr("id")
-                obj.css("display", "block")
-                obj.find("p").text(itemName)
-                obj.addClass("my-item")
-                const target = $("#item-area")
-                target.append(obj)
-
+                // obj.removeAttr("id")
+                // obj.css("display", "block")
+                // obj.find("p").text(itemName)
+                // obj.addClass("my-item")
+                // const target = $("#item-area")
+                // target.append(obj)
+                //
                 $("input[name=optionName]").val("")
+                getOptions()
             }
             , error: function(jqXHR) {
                 console.log("ajax 실패", jqXHR)

@@ -479,6 +479,7 @@
             // 데이터 칸 초기화
             $("input[name=rewardPrice]").val("")
             $("input[name=rewardInfo]").val("")
+            $("#option-list option:eq(0)").prop("selected", true)
             $(".reward-option").remove()
         })
     })// document onload 마지막

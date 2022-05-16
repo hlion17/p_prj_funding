@@ -5,10 +5,20 @@
 <%@include file="/WEB-INF/views/component/header.jsp"%>
 
 <style>
-    div {
-        border: 1px solid black;
+    /*div {*/
+    /*    border: 1px solid black;*/
+    /*}*/
+    button {
+        border: none;
+        outline: none;
+        padding: 10px;
+        border-radius: 10px;
     }
-
+    @media screen and (max-width: 1000px) {
+        #left-content {
+            display: none;
+        }
+    }
     #start-container {
         display: flex;
         width: 100%;
@@ -30,36 +40,81 @@
         width: 450px;
         margin: 0 auto;
     }
+    .start-info-msg {
+        margin-top: 50px;
+        margin-bottom: 10px;
+        color: darkorange;
+    }
+    #on-writing-box {
+        display: flex;
+        flex-direction: column;
+        height: 400px;
+        overflow: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+
+        /* scroll bar hidden */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    /* scroll bar hidden */
+    #on-writing-box::-webkit-scrollbar {
+        display: none;
+    }
     .start-on-writing {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+        padding: 10px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     }
     .start-on-writing img, .start-on-writing > div > div > p {
-        width: 100px;
+        width: 70px;
         height: 70px;
+        margin: 0;
+    }
+    .start-on-writing > div:first-child {
+        display: flex;
+        align-items: center;
+    }
+    .start-on-writing > div > p {
+        max-width: 200px;
+        margin: 0;
+        padding: 0 10px;
+        font-size: 14px;
     }
     .start-on-writing > button {
-        width: 120px;
-        height: 50px;
+        font-size: 12px;
+        width: 90px;
+        height: 40px;
     }
     .start-on-writing > div {
         display: flex;
     }
+    .start-new-category {
+        margin: 50px 0;
+    }
     .start-new-category > div {
         display: flex;
+    }
+    #category-list {
+        margin-top: 20px;
     }
     #category-list > ul {
         display: flex;
         flex-wrap: wrap;
         list-style: none;
+        padding: 0;
     }
     #category-list > ul > li {
         display: inline-block;
         width: auto;
         padding: 10px;
         margin: 5px;
-        border: 1px solid black;
+        border: 1px solid #ccc;
         border-radius: 15px;
+        font-weight: 400;
     }
     .start-new-intro {
         display: flex;
@@ -85,9 +140,11 @@
         $("#category-list li").click(function () {
             $("#category-list li").css("background", "none")
             $("#category-list li").css("color", "black")
+            $("#category-list li").css("border", "1px solid #ccc")
             $("#category-list li").removeAttr("data-category-checked")
-            $(this).css("background", "orange")
+            $(this).css("background", "darkorange")
             $(this).css("color", "white")
+            $(this).css("border", "none")
             $(this).attr("data-category-checked", "checked")
         });
         // 작성중인 프로젝트로 이동
@@ -134,27 +191,32 @@
     <div id="left-content"></div>
     <div id="right-content">
         <div class="start-content">
+            <c:if test="${not empty list}">
             <div class="start-info-msg">
-                <span>작성중 프로젝트 안내 메시지</span>
+                <i class="fa-solid fa-pencil"></i>
+                <span>작성중인 프로젝트</span>
             </div>
-            <c:forEach var="p" items="${list}">
-            <div class="start-on-writing">
-                <div>
+            <div id="on-writing-box">
+                <c:forEach var="p" items="${list}">
+                <div class="start-on-writing">
                     <div>
-                        <c:if test="${not empty p.projectImage}">
-                        <img src="${p.projectImage}" alt="">
-                        </c:if>
-                        <c:if test="${empty p.projectImage}">
-                        <p>no image</p>
-                        </c:if>
+                        <div>
+                            <c:if test="${not empty p.projectImage}">
+                            <img src="${p.projectImage}" alt="">
+                            </c:if>
+                            <c:if test="${empty p.projectImage}">
+                            <p>no image</p>
+                            </c:if>
+                        </div>
+                        <p>${p.projectTitle}</p>
                     </div>
-                    <p>${p.projectTitle}</p>
+                    <button data-projectNo="${p.projectNo}" class="on-writing">이어서 작성</button>
                 </div>
-                <button data-projectNo="${p.projectNo}" class="on-writing">이어서 작성</button>
+                </c:forEach>
             </div>
-            </c:forEach>
+            </c:if>
             <div class="start-new-category">
-                <h2>새로운 프로젝트 생성 메시지</h2>
+                <h2>프로젝트의 카테고리</h2>
                 <div id="category-list">
                     <ul>
                         <c:forEach var="c" items="${cList}">

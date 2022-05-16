@@ -64,18 +64,19 @@
 
     <update id="update" parameterType="me.project.funding.dto.ProjectDTO">
         update project
-            set category_id = #{categoryId}
-            , project_title = #{projectTitle}
-            , project_intro = #{projectIntro}
-            , budget_plan = #{budgetPlan}
-            , schedule_plan = #{schedulePlan}
-            , project_image = #{projectImage}
-            , project_price = #{projectPrice}
-            , open_date = #{openDate}
-            , close_date = #{closeDate}
-            , delivery_date = #{deliveryDate}
-            , project_content = #{projectContent}
-            , fund_price = #{fundPrice}
+            set
+                category_id = NVL(#{categoryId}, category_id)
+                , project_title = NVL(#{projectTitle}, project_title)
+                , project_intro = NVL(#{projectIntro}, project_intro)
+                , budget_plan =NVL(#{budgetPlan},budget_plan)
+                , schedule_plan = NVL(#{schedulePlan}, schedule_plan)
+                , project_image = NVL(#{projectImage}, project_image)
+                , project_price = NVL(#{projectPrice}, project_price)
+                , open_date = NVL(#{openDate}, open_date)
+                , close_date = NVL(#{closeDate}, close_date)
+                , delivery_date = NVL(#{deliveryDate}, delivery_date)
+                , project_content = NVL(#{projectContent}, project_content)
+                , fund_price = NVL(#{fundPrice}, fund_price)
         where project_no = #{projectNo}
     </update>
 
