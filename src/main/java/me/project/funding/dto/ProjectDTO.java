@@ -33,4 +33,7 @@ public class ProjectDTO {
     // reward 테이블과 조인할 경우
     @ToString.Exclude
     RewardDTO reward = new RewardDTO();
+    // category 테이블과 조인할 경우
+//    @ToString.Exclude
+    private CategoryDTO category;
 }

@@ -5,8 +5,11 @@ import me.project.funding.commons.Pagination;
 import me.project.funding.dto.CategoryDTO;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.dto.ProjectDTO;
+import me.project.funding.dto.RewardDTO;
+import me.project.funding.mapper.ProjectMapper;
 import me.project.funding.service.face.MemberService;
 import me.project.funding.service.face.ProjectService;
+import me.project.funding.service.face.RewardService;
 import oracle.jdbc.proxy.annotation.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -33,7 +36,13 @@ public class ProjectController {
     private ProjectService projectService;
 
     @Autowired
+    private ProjectMapper projectMapper;
+
+    @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private RewardService rewardService;
 
     // Date 타입 바인더
     @InitBinder
@@ -335,9 +344,20 @@ public class ProjectController {
 
         // 프로젝트 조회
         ProjectDTO project = projectService.getProject(projectNo);
+        log.info("조회된 프로젝트: {}", project);
+
+        // 후원자 조회
+        Integer contributors = projectMapper.getContributorsCntByProjectNo(projectNo);
+        log.info("후원자수: {}", contributors);
+
+        // 리워드 조회
+        List<RewardDTO> rewards = rewardService.getRewards(projectNo);
+        log.info("조회된 리워드: {}", rewards);
 
         // View 전달 데이터
         model.put("project", project);
+        model.put("contributors", contributors);
+        model.put("rewards", rewards);
         return mav;
     }
 

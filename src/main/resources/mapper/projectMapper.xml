@@ -31,6 +31,29 @@
         </association>
     </resultMap>
 
+    <resultMap id="ProjectWithCategory" type="me.project.funding.dto.ProjectDTO">
+        <id property="projectNo" column="project_no" />
+        <result property="memberNo" column="member_no" />
+        <result property="categoryId" column="category_id" />
+        <result property="projectTitle" column="project_title" />
+        <result property="projectIntro" column="project_intro" />
+        <result property="budgetPlan" column="budget_plan" />
+        <result property="schedulePlan" column="schedule_plan" />
+        <result property="projectImage" column="project_image" />
+        <result property="projectPrice" column="project_price" />
+        <result property="openDate" column="open_date" />
+        <result property="closeDate" column="close_date" />
+        <result property="deliveryDate" column="delivery_date" />
+        <result property="projectContent" column="project_content" />
+        <result property="fundPrice" column="fund_price" />
+        <result property="sum" column="sum" />
+        <result property="projectStep" column="project_step" />
+        <association property="category" column="category_no" javaType="me.project.funding.dto.CategoryDTO">
+            <id property="categoryNo" column="category_no" />
+            <result property="categoryName" column="category_name" />
+        </association>
+    </resultMap>
+
     <resultMap id="RewardWithProject" type="me.project.funding.dto.RewardDTO">
         <association property="me.project.funding.dto.ProjectDTO" column="projectNo" javaType="me.project.funding.dto.ProjectDTO" select="selectProject">
         </association>
@@ -42,6 +65,9 @@
     <select id="selectProject" resultType="me.project.funding.dto.ProjectDTO">
         select * from project
     </select>
+    <select id="selectCategory" resultType="me.project.funding.dto.CategoryDTO">
+        select * from category
+    </select>
 
     <select id="findOnWritingProject" parameterType="me.project.funding.dto.MemberDTO" resultType="me.project.funding.dto.ProjectDTO">
         <include refid="selectFromProject"/>
@@ -49,9 +75,22 @@
             and project_step = 0
     </select>
 
-    <select id="findByNo" parameterType="int" resultType="me.project.funding.dto.ProjectDTO">
+    <!--<select id="findByNo" parameterType="int" resultType="me.project.funding.dto.ProjectDTO">
         <include refid="selectFromProject" />
         where project_no = #{projectNo}
+    </select>-->
+
+    <select id="findByNo" parameterType="int" resultMap="ProjectWithCategory">
+        select *
+        from project p
+                 left join(
+            select project_no, sum(payment_amount) sum
+            from payment
+            group by project_no) py
+                          on py.project_no = p.project_no
+                 join category c
+                      on c.category_no = p.category_id
+        where p.project_no = #{projectNo}
     </select>
 
     <insert id="insert" parameterType="me.project.funding.dto.ProjectDTO">
@@ -113,12 +152,12 @@
         , pj.*
         , nvl(sum, 0) sum
         from project pj
-        left join (
-        select project_no, sum(payment_amount) sum
-        from payment
-        group by project_no
-        ) py
-        on pj.project_no = py.project_no
+            left join (
+                    select project_no, sum(payment_amount) sum
+                    from payment
+                    group by project_no
+                ) py
+                on pj.project_no = py.project_no
 
         <where>
             <if test="category != null and !''.equals(category)">
@@ -144,6 +183,19 @@
             </otherwise>
         </choose>
 
+    </select>
+
+    <select id="getContributorsCntByProjectNo" resultType="java.lang.Integer" parameterType="int">
+        select NVL(contributors, 0) contributors
+        from project p
+                 left join (
+            select py.project_no, count(distinct o.member_no) contributors
+            from payment py
+                     join order_tb o
+                          on py.order_no = o.order_no
+            group by py.project_no) po
+                           on p.project_no = po.project_no
+        where p.project_no = #{projectNo}
     </select>
 
 </mapper>

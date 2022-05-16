@@ -65,4 +65,11 @@ public interface ProjectMapper {
      * @return 페이지 정보가 적용된 프로젝트 리스트
      */
     List<ProjectDTO> findAllByFilterAndOrder(Pagination pagination);
+
+    /**
+     * 프로젝트 후원자 수 조회
+     * @param projectNo 프로젝트 식별값
+     * @return 조회된 후원자 수
+     */
+    int getContributorsCntByProjectNo(int projectNo);
 }
