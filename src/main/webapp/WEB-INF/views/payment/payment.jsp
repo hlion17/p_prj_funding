@@ -131,11 +131,29 @@
                 // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
                 // 예제를 참고하여 다양한 활용법을 확인해 보세요.
                 const address = $("input[name=address]")
+                const zonecode = $("input[name=zonecode]")
                 address.val(data.address)
+                zonecode.val(data.zonecode)
             }
         }).open();
     }
-
+    // 핸드폰 번호 값 검증
+    function checkPhone(val) {
+        const regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/
+        if (regPhone.test(val) != true) {
+            return false
+        }
+        return true
+    }
+    // 공백 값 검증
+    function isEmpty(parameters) {
+        for (const key in parameters) {
+            if (parameters[key] == "" || parameters[key] == undefined) {
+                return true
+            }
+        }
+        return false
+    }
     $(document).ready(function () {
         $("#extra-pay").on("keyup", function () {
             let value = Number($("#extra-pay").val())
@@ -206,19 +224,20 @@
                 <div class="box-style">
                     <div>
                         <p>받는 사람</p>
-                        <input type="text">
+                        <input name="recipientName" type="text">
                     </div>
                     <div>
                         <p>주소</p>
-                        <input type="text" name="address" onclick="searchPost()">
+                        <input name="address" type="text" name="address" onclick="searchPost()">
                     </div>
                     <div>
                         <p>상세주소</p>
-                        <input type="text">
+                        <input  name="addressDetail" type="text">
+                        <input name="zonecode" type="hidden">
                     </div>
                     <div>
                         <p>수령인 연락처</p>
-                        <input type="text">
+                        <input name="recipientPhone" type="text">
                     </div>
                 </div>
             </div>
@@ -250,18 +269,41 @@
     var IMP = window.IMP; // 생략 가능
     IMP.init("imp80901777");
     function requestPay() {
+        const recipientName = $("input[name=recipientName]").val()
+        const address = $("input[name=address]").val()
+        const addressDetail = $("input[name=addressDetail]").val()
+        const recipientPhone = $("input[name=recipientPhone]").val()
+        const zonecode = $("input[name=zonecode]").val()
+        const extraPay = $("#extra-pay").val()
+
+        // console.log("수령인: ", recipientName)
+        // console.log("주소: ", address)
+        // console.log("상세주소: ", addressDetail)
+        // console.log("수령인 연락처: ", recipientPhone)
+        // console.log("우편번호: ", zonecode)
+        // console.log("추가금액: ", extraPay)
+
+        // 값 검증
+        if (!checkPhone(recipientPhone)) {
+            // console.log("핸드폰 형식이 잘못됨")
+            return false
+        }
+        if (isEmpty([recipientName, address, recipientPhone])) {
+            // console.log("빈값이 포함됨")
+            return false
+        }
+
         IMP.request_pay({ // param
             pg: "html5_inicis",
             pay_method: "card",
-            // merchant_uid: "ORD20180131-0000011",
-            merchant_uid: "ORD20180131-00000113",
-            name: "테스트 아이템1",
-            amount: 100,
-            buyer_email: "yourdad20626@gmail.com",
-            buyer_name: "테스터",
-            buyer_tel: "010-1111-1111",
-            buyer_addr: "서울특별시 강남구 신사동",
-            buyer_postcode: "01181"
+            // merchant_uid: "ORD20180131-000001",
+            name: "${reward.rewardIntro}",
+            amount: Number(${reward.rewardPrice}) + Number(extraPay),
+            buyer_email: "${member.email}",
+            buyer_name: "${member.name}",
+            buyer_tel: "${member.phone}",
+            buyer_addr: address + " " + addressDetail,
+            buyer_postcode: zonecode
         }, function (rsp) { // callback
             if (rsp.success) {
                 // jQuery로 HTTP 요청
@@ -270,8 +312,8 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     data: {
-                        imp_uid: rsp.imp_uid,  // 결제번호
-                        merchant_uid: rsp.merchant_uid  // 주문번호
+                        imp_uid: rsp.imp_uid  // 결제번호
+                        // , merchant_uid: rsp.merchant_uid  // 주문번호
                         // 서버는 클라이언트로부터 결제 정보를 수신 후 결제금액 위변조 여부 검증
                     }
                 }).done(function (data) {
