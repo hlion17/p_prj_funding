@@ -56,4 +56,11 @@ public interface RewardMapper {
      * @return 조회된 리워드 목록
      */
     List<RewardDTO> findAllRewards(int projectNo);
+
+    /**
+     * 하나의 리워드 조회
+     * @param rewardNo 조회할 리워드 식별값
+     * @return 리워드 조회결과
+     */
+    RewardDTO findByNo(int rewardNo);
 }

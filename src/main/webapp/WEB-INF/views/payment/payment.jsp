@@ -1,0 +1,289 @@
+<%@ page import="java.util.Date" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%-- 오늘 날짜 --%>
+<c:set var="today" value="<%=new Date()%>" />
+
+<%-- header --%>
+<%@include file="/WEB-INF/views/component/header.jsp" %>
+
+<style>
+    button {
+        border: none;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    #wrapper {
+        width: 1080px;
+        margin: 50px auto;
+    }
+    #payment-body {
+        display: flex;
+    }
+    #body-left {
+        width: 60%;
+        padding: 20px;
+    }
+    #body-right {
+        flex-grow: 1;
+        padding: 20px;
+    }
+    #project-area {
+        display: flex;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #ccc;
+    }
+    #project-area > div:first-child {
+        width: 100px;
+        height: 100px;
+    }
+    #project-area div:first-child img {
+        width: 100%;
+        height: 100%;
+    }
+    #project-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin-left: 20px;
+    }
+    #project-info span:first-child {
+        color: rgb(192,192,192);
+        font-weight: 700;
+    }
+    #project-info > div {
+        display: flex;
+    }
+    #project-info > div > * {
+        padding-right: 20px;
+    }
+    /* 박스영역 설정 */
+    .box-style {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .box-style div {
+        display: flex;
+    }
+    .box-style p {
+        font-weight: 700;
+        width: 80px;
+    }
+    #reward-box {
+        display: flex;
+        flex-direction: column;
+    }
+    #reward-box > div {
+        display: flex;
+        width: 300px;
+    }
+    #reward-box > div > p:first-child {
+        width: 80px;
+        font-weight: 700;
+    }
+    #reward-box > div > p:nth-child(2) {
+        flex-grow: 1;
+    }
+    .body-component {
+        margin: 30px 0;
+    }
+    .body-component > p:first-child {
+        font-weight: 700;
+        font-size: 20px;
+    }
+    #payment-area button {
+        width: 100%;
+    }
+    #payment-area .body-component:first-child > div:first-child {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 75px;
+    }
+    #payment-area .body-component:first-child > div:nth-child(2) {
+        margin-top: 20px;
+    }
+    #delivery-area .box-style > div {
+        margin-bottom: 10px;
+    }
+    #delivery-area .box-style > div > p {
+        width: 150px;
+    }
+    #delivery-area .box-style > div > input {
+        width: 100%;
+    }
+
+</style>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- iamport.payment.js -->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script>
+    // 주소 조회 API
+    function searchPost() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+                // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+                const address = $("input[name=address]")
+                address.val(data.address)
+            }
+        }).open();
+    }
+
+    $(document).ready(function () {
+        $("#extra-pay").on("keyup", function () {
+            let value = Number($("#extra-pay").val())
+            value += Number(${reward.rewardPrice})
+            $("#final-payment-amount").text(value.toLocaleString())
+
+        })
+
+
+
+    })
+
+</script>
+
+<div id="wrapper">
+    <div id="payment-head">
+        <div id="project-area">
+            <div>
+                <img src="${project.projectImage}" alt="">
+            </div>
+            <div id="project-info">
+                <span>${project.category.categoryName}</span>
+                <h3>${project.projectTitle}</h3>
+                <div>
+                    <strong>${project.sum}원</strong>
+                    <span><fmt:formatNumber value="${project.sum/project.projectPrice}" type="percent" /></span>
+                    <span><fmt:parseNumber value="${(project.closeDate.time - today.time) / (1000 * 60 * 60 * 24)}" integerOnly="true" />일 남음</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="payment-body">
+        <div id="body-left">
+            <div id="reward-area" class="body-component">
+                <p>선물정보</p>
+                <div class="box-style" id="reward-box">
+                    <div>
+                        <p>선물구성</p>
+                        <span>${reward.rewardIntro}</span>
+                    </div>
+                    <div>
+                        <p>선물금액</p>
+                        <span><fmt:formatNumber value="${reward.rewardPrice}" pattern="#,###" /></span>
+                    </div>
+                </div>
+            </div>
+            <div class="body-component">
+                <p>추가후원 금액</p>
+                <div class="box-style">
+                    <input class="box-style" type="text" id="extra-pay" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                </div>
+            </div>
+            <div id="member-area" class="body-component">
+                <p>후원자 정보</p>
+                <div class="box-style" id="member-box">
+                    <div>
+                        <p>연락처</p>
+                        <span>${member.phone}</span>
+                    </div>
+                    <div>
+                        <p>이메일</p>
+                        <span>${member.email}</span>
+                    </div>
+                </div>
+            </div>
+            <div id="delivery-area" class="body-component">
+                <p>배송지 추가</p>
+                <div class="box-style">
+                    <div>
+                        <p>받는 사람</p>
+                        <input type="text">
+                    </div>
+                    <div>
+                        <p>주소</p>
+                        <input type="text" name="address" onclick="searchPost()">
+                    </div>
+                    <div>
+                        <p>상세주소</p>
+                        <input type="text">
+                    </div>
+                    <div>
+                        <p>수령인 연락처</p>
+                        <input type="text">
+                    </div>
+                </div>
+            </div>
+            <div id="payment-method-area" class="body-component">
+                <p>결제수단</p>
+                <div class="box-style" id="delivery-box">
+                    결제수단 영역
+                </div>
+            </div>
+        </div>
+        <div id="body-right">
+            <div id="payment-area">
+                <div class="body-component">
+                    <div class="box-style">
+                        <div>최종 후원금액</div>
+                        <p id="final-payment-amount"><fmt:formatNumber value="${reward.rewardPrice}" pattern="#,###" /></p>
+                    </div>
+                    <div>
+                        <button onclick="requestPay()">후원하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 결제
+    var IMP = window.IMP; // 생략 가능
+    IMP.init("imp80901777");
+    function requestPay() {
+        IMP.request_pay({ // param
+            pg: "html5_inicis",
+            pay_method: "card",
+            // merchant_uid: "ORD20180131-0000011",
+            merchant_uid: "ORD20180131-00000113",
+            name: "테스트 아이템1",
+            amount: 100,
+            buyer_email: "yourdad20626@gmail.com",
+            buyer_name: "테스터",
+            buyer_tel: "010-1111-1111",
+            buyer_addr: "서울특별시 강남구 신사동",
+            buyer_postcode: "01181"
+        }, function (rsp) { // callback
+            if (rsp.success) {
+                // jQuery로 HTTP 요청
+                jQuery.ajax({
+                    url: "/payment",
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    data: {
+                        imp_uid: rsp.imp_uid,  // 결제번호
+                        merchant_uid: rsp.merchant_uid  // 주문번호
+                        // 서버는 클라이언트로부터 결제 정보를 수신 후 결제금액 위변조 여부 검증
+                    }
+                }).done(function (data) {
+                    // 가맹점 서버 결제 API 성공시 로직
+                    console.log("서버 응답결과: ", data)
+                })
+            } else {
+
+            }
+        });
+    }
+</script>
+
+<%-- footer --%>
+<%@include file="/WEB-INF/views/component/footer.jsp" %>

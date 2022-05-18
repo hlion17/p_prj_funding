@@ -118,8 +118,19 @@
         border-radius: 15px;
         border: 1px solid #ccc;
     }
-    #project-nav2 a {
-        text-decoration: none;
+    #project-nav1 li:last-child {
+        color: #ccc;
+    }
+    /* nav1 메뉴 활성화 밑줄 */
+    .nav1-select::after{
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        position: relative;
+        left: 0;
+        bottom: -11px;
+        background: black;
     }
     /* 프로젝트 본문 */
     #content-wrapper {
@@ -188,6 +199,17 @@
     }
 </style>
 
+<script>
+    $(document).ready(function () {
+        $(".reward-card").click(function () {
+            <%--console.log("리워드 식별값: ",$(this).attr("data-rewardNo"))--%>
+            <%--console.log("프로젝트 식별값: ", ${project.projectNo})--%>
+            const rewardNo = $(this).attr("data-rewardNo")
+            location.href = "/payment/${project.projectNo}?rewardNo=" + rewardNo
+        })
+    })
+</script>
+
 <div class="wrapper">
     <%-- 프로젝트 헤더 --%>
     <div id="project-header-wrapper">
@@ -249,7 +271,7 @@
 <%-- 프로젝트 네비게이션 --%>
 <div id="project-nav1">
     <ul>
-        <li>프로젝트 계획</li>
+        <li class="nav1-select">프로젝트 계획</li>
         <li>커뮤니티</li>
     </ul>
 </div>
@@ -288,7 +310,7 @@
             <div id="content-right">
                 <p>선물선택</p>
                 <c:forEach var="r" items="${rewards}">
-                <div class="reward-card">
+                <div class="reward-card" data-rewardNo="${r.rewardNo}">
                     <p><fmt:formatNumber value="${r.rewardPrice}" pattern="#,###" /></p>
                     <p>${r.rewardIntro}</p>
                     <ul>

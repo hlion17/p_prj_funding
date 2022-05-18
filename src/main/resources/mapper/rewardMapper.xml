@@ -59,4 +59,8 @@
         order by reward_no
     </select>
 
+    <select id="findByNo" parameterType="int" resultType="me.project.funding.dto.RewardDTO">
+        select * from reward where reward_no = #{rewardNo}
+    </select>
+
 </mapper>

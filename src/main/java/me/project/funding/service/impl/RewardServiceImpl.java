@@ -67,4 +67,9 @@ public class RewardServiceImpl implements RewardService {
             log.error("리워드 삭제 실패");
         }
     }
+
+    @Override
+    public RewardDTO getRewardByNo(int rewardNo) {
+        return rewardMapper.findByNo(rewardNo);
+    }
 }

@@ -53,5 +53,12 @@ public interface RewardService {
      */
     void deleteReward(int rewardNo);
 
+    /**
+     * 리워드 식별값으로 조회
+     * @param rewardNo 리워드 식별값
+     * @return 조회된 리워드 정보가 담긴 DTO
+     */
+    RewardDTO getRewardByNo(int rewardNo);
+
     //RewardOptionDTO findOptionByNo(RewardOptionDTO option);
 }

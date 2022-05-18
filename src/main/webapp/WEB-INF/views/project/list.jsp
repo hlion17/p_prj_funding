@@ -75,6 +75,9 @@
     .section-body .body-etc div:first-child > span:first-child{
         color: red;
     }
+    #category-nav img {
+        padding: 10px;
+    }
 </style>
 
 <script>
@@ -155,18 +158,18 @@
     <!-- 카테고리 -->
     <section id="category-section">
         <div class="container py-5">
-            <div class="row">
+            <div class="row" id="category-nav">
                 <div class="col text-center" onclick="getList()">
-                    <div><img src="/resources/img/project/category/all.svg" style="withd: 800px; height: 60px"></div>
+                    <div><img src="/resources/img/project/category/all.svg" style="height: 60px"></div>
                     <span>전체</span>
                 </div>
 
                 <c:forEach var="c" items="${cList}">
-                    <div class="col text-center me-4" onclick="getList('${c.categoryNo}')">
-                        <div><img src="/resources/img/project/category/${c.categoryNo}.svg"
-                                  style="withd: 80px; height: 60px"></div>
-                        <span>${c.categoryName}</span>
-                    </div>
+                <div class="col text-center me-4" onclick="getList('${c.categoryNo}')">
+                    <div><img src="/resources/img/project/category/${c.categoryNo}.svg"
+                              style="withd: 80px; height: 60px"></div>
+                    <span>${c.categoryName}</span>
+                </div>
                 </c:forEach>
 
             </div>
