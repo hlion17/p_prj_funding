@@ -276,27 +276,27 @@
         const zonecode = $("input[name=zonecode]").val()
         const extraPay = $("#extra-pay").val()
 
-        // console.log("수령인: ", recipientName)
-        // console.log("주소: ", address)
-        // console.log("상세주소: ", addressDetail)
-        // console.log("수령인 연락처: ", recipientPhone)
-        // console.log("우편번호: ", zonecode)
-        // console.log("추가금액: ", extraPay)
+        console.log("수령인: ", recipientName)
+        console.log("주소: ", address)
+        console.log("상세주소: ", addressDetail)
+        console.log("수령인 연락처: ", recipientPhone)
+        console.log("우편번호: ", zonecode)
+        console.log("추가금액: ", extraPay)
 
         // 값 검증
         if (!checkPhone(recipientPhone)) {
-            // console.log("핸드폰 형식이 잘못됨")
+            console.log("핸드폰 형식이 잘못됨")
             return false
         }
         if (isEmpty([recipientName, address, recipientPhone])) {
-            // console.log("빈값이 포함됨")
+            console.log("빈값이 포함됨")
             return false
         }
 
         IMP.request_pay({ // param
             pg: "html5_inicis",
             pay_method: "card",
-            // merchant_uid: "ORD20180131-000001",
+            merchant_uid: "merchant_" + new Date().getTime(),
             name: "${reward.rewardIntro}",
             amount: Number(${reward.rewardPrice}) + Number(extraPay),
             buyer_email: "${member.email}",
@@ -305,23 +305,40 @@
             buyer_addr: address + " " + addressDetail,
             buyer_postcode: zonecode
         }, function (rsp) { // callback
+            console.log(rsp)
+            // 결제 요청이 성공한 경우
             if (rsp.success) {
-                // jQuery로 HTTP 요청
+                // 결제 성공한 경우 WAS로 결제 정보 전달
                 jQuery.ajax({
-                    url: "/payment",
+                    url: "/payment/verification",
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    data: {
-                        imp_uid: rsp.imp_uid  // 결제번호
-                        // , merchant_uid: rsp.merchant_uid  // 주문번호
-                        // 서버는 클라이언트로부터 결제 정보를 수신 후 결제금액 위변조 여부 검증
-                    }
+                    <%--data: {--%>
+                    <%--    // 서버는 클라이언트로부터 결제 정보를 수신 후 결제금액 위변조 여부 검증--%>
+                    <%--    imp_uid: rsp.imp_uid,  // 결제번호--%>
+                    <%--    reward_no: ${reward.rewardNo},--%>
+                    <%--    merchant_uid: rsp.merchant_uid  // 주문번호--%>
+                    <%--}--%>
+                    data: JSON.stringify({
+                            imp_uid: rsp.imp_uid,
+                            reward_no: ${reward.rewardNo},
+                            merchant_uid: rsp.merchant_uid
+                        })
                 }).done(function (data) {
                     // 가맹점 서버 결제 API 성공시 로직
                     console.log("서버 응답결과: ", data)
+                    // switch (data.rsp) {
+                    //     case "success" :
+                    //         // 검증 성공시 로직
+                    //         break
+                    //     case "fail" :
+                    //         // 검증 실패시 로직
+                    //         break
+                    // }
                 })
             } else {
-
+                // 결제에 실패했을 경우
+                // 에러메시지, 결제 상태 코드 변경하는 로직
             }
         });
     }

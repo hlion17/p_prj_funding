@@ -1,5 +1,9 @@
 package me.project.funding.controller;
 
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import lombok.extern.slf4j.Slf4j;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.dto.ProjectDTO;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +34,12 @@ public class PaymentController {
 
     @Autowired
     RewardService rewardService;
+
+    private IamportClient api;
+
+    public PaymentController() {
+        this.api = new IamportClient("6982445871226183", "be5fac0e5b663f545cdd7a9eb391f9b224e0513243c4148ba51c2f9775cb941161f48afc09f988ad");
+    }
 
     // not tested
     @GetMapping("/payment/{projectNo}")
@@ -72,14 +83,14 @@ public class PaymentController {
     }
 
     // not tested
-    @PostMapping("/payment")
+    @PostMapping("/payment/verification")
     @ResponseBody
-    public Map<String, Object> payment(@RequestBody String requestBody) {
+    public IamportResponse<Payment> payment(@RequestBody Map<String, String> requestBody) throws IamportResponseException, IOException {
         log.info("[/payment][POST]");
         Map<String, Object> json = new HashMap<>();
 
         log.info("요청파라미터:  {}", requestBody);
 
-        return json;
+        return api.paymentByImpUid(requestBody.get("imp_uid"));
     }
 }
