@@ -154,6 +154,7 @@
         }
         return false
     }
+
     $(document).ready(function () {
         $("#extra-pay").on("keyup", function () {
             let value = Number($("#extra-pay").val())
@@ -298,16 +299,17 @@
             pay_method: "card",
             merchant_uid: "merchant_" + new Date().getTime(),
             name: "${reward.rewardIntro}",
-            amount: Number(${reward.rewardPrice}) + Number(extraPay),
+            amount: Number(${reward.rewardPrice}) + Number(extraPay),  // 여기가 위변조 가능성?
             buyer_email: "${member.email}",
             buyer_name: "${member.name}",
             buyer_tel: "${member.phone}",
             buyer_addr: address + " " + addressDetail,
             buyer_postcode: zonecode
         }, function (rsp) { // callback
-            console.log(rsp)
+            console.log(rsp)  // ***********************
             // 결제 요청이 성공한 경우
             if (rsp.success) {
+                const res_amount = rsp.amount;  // 요청완료 결과 결제 금액 *********
                 // 결제 성공한 경우 WAS로 결제 정보 전달
                 jQuery.ajax({
                     url: "/payment/verification",
@@ -319,14 +321,17 @@
                     <%--    reward_no: ${reward.rewardNo},--%>
                     <%--    merchant_uid: rsp.merchant_uid  // 주문번호--%>
                     <%--}--%>
+                    // 서버는 클라이언트로부터 결제 정보를 수신 후 결제금액 위변조 여부 검증
                     data: JSON.stringify({
-                            imp_uid: rsp.imp_uid,
+                            imp_uid: rsp.imp_uid,  // 해당 uid, server 에서 uid 로 요청 보내서 결제금액 확인  ***********
+                            // 위의 rewardPrice 값을 위변조 할 수 있다면 여기도 위변조 할 수 있는 것 아닐까?
                             reward_no: ${reward.rewardNo},
+                            extraPay: extraPay,
                             merchant_uid: rsp.merchant_uid
                         })
                 }).done(function (data) {
                     // 가맹점 서버 결제 API 성공시 로직
-                    console.log("서버 응답결과: ", data)
+                    console.log("서버 응답결과: ", data)  // ******************
                     // switch (data.rsp) {
                     //     case "success" :
                     //         // 검증 성공시 로직

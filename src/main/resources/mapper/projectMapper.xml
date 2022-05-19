@@ -188,13 +188,12 @@
     <select id="getContributorsCntByProjectNo" resultType="java.lang.Integer" parameterType="int">
         select NVL(contributors, 0) contributors
         from project p
-                 left join (
+            left join (
             select py.project_no, count(distinct o.member_no) contributors
             from payment py
-                     join order_tb o
-                          on py.order_no = o.order_no
-            group by py.project_no) po
-                           on p.project_no = po.project_no
+                join order_tb o on py.order_no = o.order_no
+            group by py.project_no
+            ) po on p.project_no = po.project_no
         where p.project_no = #{projectNo}
     </select>
 
