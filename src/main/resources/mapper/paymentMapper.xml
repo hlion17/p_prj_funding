@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.project.funding.mapper.PaymentMapper">
+
+    <insert id="insert" parameterType="me.project.funding.dto.PaymentDTO">
+        <selectKey order="BEFORE" resultType="int" keyProperty="paymentNo">
+            select payment_seq.nextval from dual
+        </selectKey>
+        insert into payment (payment_no, project_no, order_no, payment_code, payment_total, payment_method, payment_day)
+        values (#{paymentNo}, #{projectNo}, #{orderNo}, #{paymentCode}, #{paymentTotal}, #{paymentMethod}, sysdate)
+    </insert>
+</mapper>

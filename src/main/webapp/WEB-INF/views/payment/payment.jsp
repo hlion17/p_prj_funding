@@ -163,8 +163,6 @@
 
         })
 
-
-
     })
 
 </script>
@@ -270,6 +268,7 @@
     var IMP = window.IMP; // 생략 가능
     IMP.init("imp80901777");
     function requestPay() {
+        // 결제에 필요한 데이터
         const recipientName = $("input[name=recipientName]").val()
         const address = $("input[name=address]").val()
         const addressDetail = $("input[name=addressDetail]").val()
@@ -294,7 +293,8 @@
             return false
         }
 
-        IMP.request_pay({ // param
+        // 아임포트 결제 요청
+        IMP.request_pay({
             pg: "html5_inicis",
             pay_method: "card",
             merchant_uid: "merchant_" + new Date().getTime(),
@@ -305,45 +305,97 @@
             buyer_tel: "${member.phone}",
             buyer_addr: address + " " + addressDetail,
             buyer_postcode: zonecode
-        }, function (rsp) { // callback
-            console.log(rsp)  // ***********************
-            // 결제 요청이 성공한 경우
+        }, function (rsp) { // 결제 요청 콜백
+            console.log("아임포트 결제 결과: ", rsp)  // *************
+            // 아임포트 결제 요청이 성공한 경우
             if (rsp.success) {
-                const res_amount = rsp.amount;  // 요청완료 결과 결제 금액 *********
-                // 결제 성공한 경우 WAS로 결제 정보 전달
+                // 결제 성공한 경우 금액 위변조 확인을 위해 WAS 로 결제 정보 전달
+                // 서버 측에서 구현해야 할 로직
+                // - 아임포트 서버에서 인증 토큰 발급 후 imp_uid 로 결제 정보 요청
+                // - DB 리워드 금액과 비교하여 금액 검증
                 jQuery.ajax({
                     url: "/payment/verification",
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    <%--data: {--%>
-                    <%--    // 서버는 클라이언트로부터 결제 정보를 수신 후 결제금액 위변조 여부 검증--%>
-                    <%--    imp_uid: rsp.imp_uid,  // 결제번호--%>
-                    <%--    reward_no: ${reward.rewardNo},--%>
-                    <%--    merchant_uid: rsp.merchant_uid  // 주문번호--%>
-                    <%--}--%>
-                    // 서버는 클라이언트로부터 결제 정보를 수신 후 결제금액 위변조 여부 검증
                     data: JSON.stringify({
-                            imp_uid: rsp.imp_uid,  // 해당 uid, server 에서 uid 로 요청 보내서 결제금액 확인  ***********
                             // 위의 rewardPrice 값을 위변조 할 수 있다면 여기도 위변조 할 수 있는 것 아닐까?
-                            reward_no: ${reward.rewardNo},
-                            extraPay: extraPay,
+                            imp_uid: rsp.imp_uid,
+                            reward_no: ${reward.rewardNo},  // 검증할 리워드 식별값
+                            extraPay: extraPay,  // 검증할 추가 금액
                             merchant_uid: rsp.merchant_uid
                         })
-                }).done(function (data) {
-                    // 가맹점 서버 결제 API 성공시 로직
-                    console.log("서버 응답결과: ", data)  // ******************
-                    // switch (data.rsp) {
-                    //     case "success" :
-                    //         // 검증 성공시 로직
-                    //         break
-                    //     case "fail" :
-                    //         // 검증 실패시 로직
-                    //         break
-                    // }
+                }).done(function (data) {  // 서버 검증 절차 완료 후
+                    console.log("서버 검증 결과: ", data)
+                    switch (data.result) {
+                        case "success" :
+                            // 검증 성공시 로직
+                            // 주문, 결제 정보 DB 에 저장 요청
+                            $.ajax({
+                                type: "post",
+                                headers: { "Content-Type": "application/json" },
+                                url: "/payment/complete",
+                                dataType: "json",
+                                data: JSON.stringify({
+                                    order: {
+                                        //memberNo: ${sessionScope.loginMemberNo},
+                                        additionalFunding: extraPay
+                                        , totalPrice: Number(${reward.rewardPrice}) + Number(extraPay)
+                                    },
+                                    payment: {
+                                      projectNo: ${project.projectNo}
+                                      , paymentCode: data.data.response.impUid
+                                      , paymentTotal: data.data.response.amount
+                                      , paymentMethod: data.data.response.payMethod
+                                    }
+                                    , delivery: {
+                                        postalCode: zonecode
+                                        , address: address
+                                        , addressDetail: addressDetail
+                                        , recipientPhone: recipientPhone
+                                        , recipientName: recipientName
+                                    }
+                                    , rewardNo: ${reward.rewardNo}
+                                }),
+                                success: function (res) {
+                                    console.log("ajax 성공: ", res.result)
+                                    // TODO: 결제 성공시 이동할 페이지 작성
+                                    alert("결제 성공")
+                                    location.href='/'
+                                },
+                                error: function (error) {
+                                    // 결제 정보 DB 에 저장하지 못했을 경우
+                                    // 결제 취소하는 로직
+                                    // TODO: 결제 취소(환불) 구현
+                                    console.log("ajax 실패")
+                                    console.log("error: ", error)
+                                }
+                            })
+                            break
+                        case "fail" :
+                            // 검증 실패시 로직 (DB insert 결과가 0 과 같을 떄)
+                            // 검증에 실패 했다는 메시지 클라이언트에게 전달
+                            alert("검증 실패")
+                            // 결제 취소하는 로직
+                            // TODO: 결제 취소(환불) 구현
+                            break
+                    }
+                }).fail (function (xhr, status, error) {
+                    // THINK:
+                    //  - 검증 서비스 반환을 String fail 로 하지 말고 예외를 발생시켜버리면
+                    //  - case "fail" 에서 잡을 필요 없이 여기서 다 처리가 가능하지 않을까?
+                    //  - 단, 예외 메시지에 DB insert 에 관한 예외 메시지를 적어야 할 것 같다.
+                    console.log(xhr)
+                    console.log(status)
+                    console.log(error)
+                    alert("금액 검증 실패")
+                    // THINK: ajax success, error 와 done, fail 의 차이는 무엇인가
+                    // THINK: error 는 아무것도 출력안되던데 공식문서 한번 찾아보자
+                    // TODO: 결제 취소 로직
                 })
             } else {
-                // 결제에 실패했을 경우
-                // 에러메시지, 결제 상태 코드 변경하는 로직
+                // 아임포트를 이용한 결제에 실패했을 경우
+                // 결제 실패 메시지 클라이언트에 전달
+                alert("결제 실패")
             }
         });
     }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.project.funding.mapper.DeliveryMapper">
+
+    <insert id="insert" parameterType="me.project.funding.dto.DeliveryDTO">
+        insert into delivery
+            (
+              delivery_no
+              , order_no
+              , postal_code
+              , address
+              , address_detail
+              , recipient_phone
+              , recipient_name
+            )
+        values
+           (
+           delivery_seq.nextval
+           , #{orderNo}
+           , #{postalCode}
+           , #{address}
+           , #{addressDetail}
+           , #{recipientPhone}
+           , #{recipientName}
+           )
+    </insert>
+
+</mapper>

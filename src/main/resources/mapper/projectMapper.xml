@@ -84,7 +84,7 @@
         select *
         from project p
                  left join(
-            select project_no, sum(payment_amount) sum
+            select project_no, sum(payment_total) sum
             from payment
             group by project_no) py
                           on py.project_no = p.project_no
@@ -153,7 +153,7 @@
         , nvl(sum, 0) sum
         from project pj
             left join (
-                    select project_no, sum(payment_amount) sum
+                    select project_no, sum(payment_total) sum
                     from payment
                     group by project_no
                 ) py

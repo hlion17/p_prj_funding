@@ -1,16 +1,14 @@
 package me.project.funding.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.extern.slf4j.Slf4j;
-import me.project.funding.dto.MemberDTO;
-import me.project.funding.dto.ProjectDTO;
-import me.project.funding.dto.RewardDTO;
-import me.project.funding.service.face.MemberService;
-import me.project.funding.service.face.ProjectService;
-import me.project.funding.service.face.RewardService;
+import me.project.funding.dto.*;
+import me.project.funding.service.face.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
@@ -35,6 +33,12 @@ public class PaymentController {
 
     @Autowired
     RewardService rewardService;
+
+    @Autowired
+    PaymentService paymentService;
+
+    @Autowired
+    OrderService orderService;
 
     private IamportClient api;
 
@@ -86,71 +90,53 @@ public class PaymentController {
     // not tested
     @PostMapping("/payment/verification")
     @ResponseBody
-    public Map<String, Object> payment(@RequestBody Map<String, String> requestBody) {
-        log.info("[/payment][POST]");
+    public Map<String, Object> verifyPayment(@RequestBody Map<String, String> requestBody) {
+        log.info("[/payment/verification][POST]");
         log.info("요청파라미터:  {}", requestBody);
-        Map<String, Object> json = new HashMap<>();
+        // 아임포트 결제 요청과 DB 리워드 금액 비교 검증
+        return paymentService.verify(requestBody);
+    }
 
-        IamportResponse<Payment> result = null;
-        try {
-            // 아임포트 REST API key, private key 인증 후 결제 정보 받아오기
-            result = api.paymentByImpUid(requestBody.get("imp_uid"));
-        } catch (IamportResponseException e) {
-            e.printStackTrace();
-            // 조회 결과에 따른 응답 처리
-            switch(e.getHttpStatusCode()) {
-                // ResponseEntity 를 이용한 처리가 어울리려나..
-                case 401 :
-                    log.error("401: 인증되지 않음");
-                    // 401 status 처리 코드
-                    break;
-                case 404 :
-                    log.error("404: 거래내역이 존재하지 않음");
-                    // 404 status 처리 코드
-                    break;
-                case 500 :
-                    log.error("500: 서버 응답 오류");
-                    // 500 status 처리 코드
-                    break;
-            }
-        } catch (IOException e) {
-            //서버 연결 실패
-            e.printStackTrace();
+    // not tested
+    @PostMapping("/payment/complete")
+    @ResponseBody
+    public Map<String, Object> paymentComplete(@RequestBody Map<String, Object> param, HttpSession session) throws JsonProcessingException {
+        log.info("[/payment/complete][POST]");
+        log.info("요청 파라미터: {}", param);
+        // JSON 응답 객체 생성
+        Map<String, Object> jsonResponse = new HashMap<>();
+        // JSON 요청 객체 파싱을 위한 JACKSON 객체 생성
+        ObjectMapper mapper = new ObjectMapper();
+
+        // 요청 파라미터 확인
+        log.info("order: {}", param.get("order"));
+        log.info("payment: {}", param.get("payment"));
+        log.info("delivery: {}", param.get("delivery"));
+        log.info("rewardNo: {}", param.get("rewardNo"));
+
+        // JSON 요청 파싱 후 DTO 변환
+        OrderDTO order = mapper.readValue(mapper.writeValueAsString(param.get("order")), OrderDTO.class);
+        PaymentDTO payment = mapper.readValue(mapper.writeValueAsString(param.get("payment")), PaymentDTO.class);
+        DeliveryDTO delivery = mapper.readValue(mapper.writeValueAsString(param.get("delivery")), DeliveryDTO.class);
+        int rewardNo = (Integer) param.get("rewardNo");
+
+        // 로그인 회원 정보
+        if (session.getAttribute("loginMemberNo") == null) {
+            log.error("회원 식별값이 존재하지 않음");
+            throw new RuntimeException("잘못된 주문 정보");
         }
+        // 주문 정보에 회원 식별값을 세션에서 가져온다.
+        order.setMemberNo((Integer) session.getAttribute("loginMemberNo"));
 
-        System.out.println("아임포트 토큰 요청 결과: " + result);
+        // 주문, 결제 정보 저장
+        String paymentSaveResult = paymentService.savePayment(order, delivery, payment, rewardNo);
 
-        // 요청 금액 변조 검증
-        // 아임포트 요청 결과 금액과 DB 리워드 금액, 추가 후원금액 비교
-        Payment response = result.getResponse();
-        RewardDTO reward = rewardService.getRewardByNo(Integer.parseInt(requestBody.get("reward_no")));
-
-        BigDecimal amount = response.getAmount();  // 결제 정보 금액
-        int rewardPrice = reward.getRewardPrice(); // DB 리워드 가격 정보
-        int extraPay = Integer.parseInt(requestBody.get("extraPay"));  // 추가 후원 금액
-
-        // 결제 요청 금액과 DB 리워드 금액 + 추가 후원금액과 비교
-        if (amount.intValue() == (rewardPrice + extraPay)) {
-            // 검증을 통과한 경우
-            json.put("result", "success");
-            json.put("data", result);
-            return json;
+        if ("success".equals(paymentSaveResult)) {
+            jsonResponse.put("result", "success");
+            return jsonResponse;
         } else {
-            // 검증에 실패한 경우
-            json.put("result", "fail");
-            json.put("data", result);
-            // bad Request, 이건 status response 로 응답 하는게 아닌거 같은데 잘못 된거 같음 다른 방법 강구
-            json.put("status", 400);
-            return json;
+            jsonResponse.put("result", "fail");
+            return jsonResponse;
         }
-
-        // TODO: 2022-05-19 MVC 구조에 맞게 리팩토링
-        // -> 결제금액을 검증하는 로직은 service 단에서 처리해야 mvc2 구조에 어울리지 않을까?
-        // controller 는 비즈니스 로직 처리에 필요한 파라미터를 비즈니스 로직 처리 객체에 전달하고
-        // 처리 결과를 받아서 view 에 뿌려주는 역할을 해야 할 것 같다.
-        // -> 토큰 발급 후 아임포트에 요청해서 결제 정보 받아옴
-        // -> 결제 정보와 리워드 번호를 검증 서비스 단으로 전달 (PaymentService), (추가) extraPay 정보도 전달
-        // -> 금액 검증 후 결과 반환
-        // -> 검증 결과 json 형태로 반환
     }
 }
