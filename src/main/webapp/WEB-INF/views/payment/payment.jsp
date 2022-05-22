@@ -240,12 +240,12 @@
                     </div>
                 </div>
             </div>
-            <div id="payment-method-area" class="body-component">
-                <p>결제수단</p>
-                <div class="box-style" id="delivery-box">
-                    결제수단 영역
-                </div>
-            </div>
+<%--            <div id="payment-method-area" class="body-component">--%>
+<%--                <p>결제수단</p>--%>
+<%--                <div class="box-style" id="delivery-box">--%>
+<%--                    결제수단 영역--%>
+<%--                </div>--%>
+<%--            </div>--%>
         </div>
         <div id="body-right">
             <div id="payment-area">
@@ -256,6 +256,7 @@
                     </div>
                     <div>
                         <button onclick="requestPay()">후원하기</button>
+                        <button style="margin-top: 30px;" onclick="cancelPay()">결제 취소 테스트</button>
                     </div>
                 </div>
             </div>
@@ -306,6 +307,12 @@
             buyer_addr: address + " " + addressDetail,
             buyer_postcode: zonecode
         }, function (rsp) { // 결제 요청 콜백
+
+            // 이렇게 결제 데이터를 콜백 함수에 지역변수로 선언해도 보안상 문제는 없을까?
+            // 결제 취소 함수를 정의 했는데 거기서 파라미터 값으로 사용하기 위함
+            const impUid = rsp.imp_uid;
+            const cancelAmount = rsp.paid_amount;
+
             console.log("아임포트 결제 결과: ", rsp)  // *************
             // 아임포트 결제 요청이 성공한 경우
             if (rsp.success) {
@@ -313,7 +320,7 @@
                 // 서버 측에서 구현해야 할 로직
                 // - 아임포트 서버에서 인증 토큰 발급 후 imp_uid 로 결제 정보 요청
                 // - DB 리워드 금액과 비교하여 금액 검증
-                jQuery.ajax({
+                $.ajax({
                     url: "/payment/verification",
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -326,9 +333,9 @@
                         })
                 }).done(function (data) {  // 서버 검증 절차 완료 후
                     console.log("서버 검증 결과: ", data)
+
                     switch (data.result) {
-                        case "success" :
-                            // 검증 성공시 로직
+                        case "success" :  // 서버 검증 성공시
                             // 주문, 결제 정보 DB 에 저장 요청
                             $.ajax({
                                 type: "post",
@@ -367,16 +374,19 @@
                                     // 결제 취소하는 로직
                                     // TODO: 결제 취소(환불) 구현
                                     console.log("ajax 실패")
+                                    console.log("결제 정보 DB에 저장 실패")
                                     console.log("error: ", error)
+                                    cancelPay(impUid, cancelAmount, "결제 정보를 DB에 저장하지 못함")
                                 }
                             })
                             break
-                        case "fail" :
-                            // 검증 실패시 로직 (DB insert 결과가 0 과 같을 떄)
+                        case "fail" :  // 검증 실패시
+                            // (DB insert 결과가 0 과 같을 떄)
                             // 검증에 실패 했다는 메시지 클라이언트에게 전달
                             alert("검증 실패")
                             // 결제 취소하는 로직
                             // TODO: 결제 취소(환불) 구현
+                            cancelPay(impUid, cancelAmount, "DB insert 결과가 1이 아님")
                             break
                     }
                 }).fail (function (xhr, status, error) {
@@ -391,6 +401,7 @@
                     // THINK: ajax success, error 와 done, fail 의 차이는 무엇인가
                     // THINK: error 는 아무것도 출력안되던데 공식문서 한번 찾아보자
                     // TODO: 결제 취소 로직
+                    cancelPay(impUid, cancelAmount, "결제 금액 검증 실패")
                 })
             } else {
                 // 아임포트를 이용한 결제에 실패했을 경우
@@ -399,7 +410,32 @@
             }
         });
     }
+    // 환불, 결제 취소
+    function cancelPay(imp_uid, amount, reason) {
+        $.ajax({
+            url: "/payment/cancel"
+            , type: "POST"
+            , contentType: "application/json"
+            , data: JSON.stringify({
+                merchant_uid: "" // 클라이언에서 생성한 주문 식별값, 일단 사용 x
+                , imp_uid: imp_uid
+                , cancel_request_amount: amount // 환불금액
+                , reason: reason // 결제 취소 사유
+            })
+            , dataType: "json"
+            , success: function (res) {
+                alert("결제취소, 환불 성공");
+                console.log("결제 취소 성공 결과: ", res)
+            }
+            , error: function (error) {
+                alert("결제취소, 환불 실패");
+                console.log("결제 취소 실패 결과: ", error)
+            }
+
+        });
+    }
 </script>
+
 
 <%-- footer --%>
 <%@include file="/WEB-INF/views/component/footer.jsp" %>

@@ -20,4 +20,11 @@ public interface OrderMapper {
      * @return DB insert 결과
      */
     int insertOrderAndReward(@Param("orderNo") int orderNo, @Param("rewardNo") int rewardNo);
+
+    /**
+     * 결제가 취소된 주문의 상태코드 변경
+     * @param orderNo 주문 식별값
+     * @return DB update 결과
+     */
+    int updateCancelResult(int orderNo);
 }

@@ -12,4 +12,26 @@
         insert into payment (payment_no, project_no, order_no, payment_code, payment_total, payment_method, payment_day)
         values (#{paymentNo}, #{projectNo}, #{orderNo}, #{paymentCode}, #{paymentTotal}, #{paymentMethod}, sysdate)
     </insert>
+
+    <select id="findByUid" resultType="me.project.funding.dto.PaymentDTO" parameterType="me.project.funding.dto.PaymentDTO">
+        select
+            CANCEL_AMOUNT
+            ,CANCEL_REASON
+            ,PAYMENT_STATUS
+            ,PAYMENT_NO
+            ,PROJECT_NO
+            ,ORDER_NO
+            ,PAYMENT_CODE
+            ,PAYMENT_TOTAL
+            ,PAYMENT_METHOD
+            ,PAYMENT_DAY
+        from payment
+        where payment_code = #{paymentCode}
+    </select>
+
+    <update id="updateCancelResult" parameterType="me.project.funding.dto.PaymentDTO">
+        update payment
+        set cancel_amount = #{cancelAmount}, payment_status = 2, cancel_reason = #{cancelReason}
+        where payment_code = #{paymentCode}
+    </update>
 </mapper>

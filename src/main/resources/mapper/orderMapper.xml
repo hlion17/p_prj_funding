@@ -18,4 +18,10 @@
         values (reward_order_seq.nextval, #{orderNo}, #{rewardNo})
     </insert>
 
+    <update id="updateCancelResult" parameterType="int">
+        update order_tb
+        set order_status = '결제취소'
+        where order_no = #{orderNo}
+    </update>
+
 </mapper>

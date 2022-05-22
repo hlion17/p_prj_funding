@@ -139,4 +139,39 @@ public class PaymentController {
             return jsonResponse;
         }
     }
+
+    // not tested
+    @PostMapping("/payment/cancel")
+    @ResponseBody
+    public IamportResponse<Payment> cancelPayment(@RequestBody Map<String, Object> param) {
+        log.info("[/payment/cancel][POST]");
+
+        // 요청 파라미터 확인
+        log.info("주문번호: {}", param.get("merchant_uid"));
+        log.info("결제번호: {}", param.get("imp_uid"));
+        log.info("결제취소 금액: {}", param.get("cancel_request_amount"));
+        log.info("결제취소 사유: {}", param.get("reason"));
+
+        // 파라미터 검증
+        if ( param.get("imp_uid") == null
+                && param.get("cancel_request_amount") == null) {
+            log.error("요청 파라미터 값이 정확하지 않음");
+            throw new RuntimeException("잘못된 요청 파라미터");
+        }
+
+        PaymentDTO paramPayment = new PaymentDTO();
+        paramPayment.setPaymentCode((String) param.get("imp_uid"));
+        paramPayment.setCancelReason((String) param.get("reason"));
+        // problem: param.get 반환값이 Object 인데,
+        //  런타임에서는 왜 String 을 Integer 로 바꿀 수 없다고 했을까
+        Object cancelAmount = param.get("cancel_request_amount");
+        paramPayment.setCancelAmount((Integer) cancelAmount);
+
+        return paymentService.cancel(paramPayment);
+    }
+
+
+    // TODO: 2022-05-21 payment 커멘드 객체로 요청 파라미터 받아올 수 있게 리팩토링
+    //  - 다른 이름으로 커맨드 객체 바인딩 할 수 있는지 알아보기
+    //  - -> imp_uid 를 paymentCode 와 같이 , 아니면 JSON key 값을 바꾸면 되긴 함
 }

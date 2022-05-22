@@ -1,5 +1,7 @@
 package me.project.funding.service.face;
 
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import me.project.funding.dto.DeliveryDTO;
 import me.project.funding.dto.OrderDTO;
 import me.project.funding.dto.PaymentDTO;
@@ -19,4 +21,11 @@ public interface PaymentService {
      * @return 저장 결과
      */
     String savePayment(OrderDTO order, DeliveryDTO delivery, PaymentDTO payment, int rewardNo);
+
+    /**
+     * 아임포트 결제 취소 요청
+     * @param payment 결제 데이터 식별값, 결제취소 금액, 사유
+     * @return 결제 취소 결과
+     */
+    IamportResponse<Payment> cancel(PaymentDTO paramPayment);
 }
