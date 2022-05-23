@@ -30,7 +30,9 @@
         margin-bottom: 20px;
     }
     #category-name {
-        background: whitesmoke;
+        /*background: whitesmoke;*/
+        background: darkorange;
+        color: white;
         padding: 10px 20px;
         border-radius: 10px;
     }
@@ -117,6 +119,7 @@
         padding: 7px 15px;
         border-radius: 15px;
         border: 1px solid #ccc;
+        cursor: pointer;
     }
     #project-nav1 li:last-child {
         color: #ccc;
@@ -154,6 +157,7 @@
     /* 기타 */
     #to-list {
         background: darkorange!important;
+        color: white;
     }
     #to-list a {
         color: white;
@@ -197,17 +201,88 @@
         color: rgb(109, 109, 109);
         margin-bottom: 5px;
     }
+    .like-active {
+        color: darkorange;
+    }
 </style>
 
 <script>
     $(document).ready(function () {
+        // 해당 프로젝트 좋아요 여부 확인
+        checkLike()
+
         $(".reward-card").click(function () {
             <%--console.log("리워드 식별값: ",$(this).attr("data-rewardNo"))--%>
             <%--console.log("프로젝트 식별값: ", ${project.projectNo})--%>
             const rewardNo = $(this).attr("data-rewardNo")
             location.href = "/payment/${project.projectNo}?rewardNo=" + rewardNo
         })
+        $("#btn-like").click(function () {
+            const login = '${sessionScope.loginMemberNo}'
+            const projectNo = '${project.projectNo}'
+
+            const btn = $(this)
+
+            // 로그인 여부 확인
+            if (login == '' || login == undefined) {
+                alert("로그인이 필요한 서비스 입니다.")
+                location.href = '/member/login'
+                return
+            }
+
+            $.ajax({
+                method: "POST"
+                , url: "/projects/like"
+                , dataType: "json"
+                , data: {projectNo: projectNo}
+                , success: function (res) {
+                    console.log(res)
+                    // success true 좋아요 insert
+                    if (res.success) {
+                        btn.addClass("like-active")
+                        alert(res.message)
+                    }
+                    // success false 좋아요 cancel
+                    if (!res.success) {
+                        btn.removeClass("like-active")
+                        alert(res.message)
+                    }
+                    // 에러 상황
+                    if (res.error != undefined) {
+                        alert(res.message)
+                    }
+                }
+                , error: function (error) {
+                    console.log("ajax 에러: ", error)
+                }
+            })
+        })
     })
+    // 좋아요 조회
+    function checkLike() {
+        const projectNo = '${project.projectNo}'
+        const btn = $("#btn-like")
+        $.ajax({
+            method: "GET"
+            , url: "/projects/like"
+            , dataType: "JSON"
+            , data: {projectNo: projectNo}
+            , success: function (res) {
+                console.log("좋아요 조회결과: ", res)
+                // 조회 성공
+                if (res.result == 'success') {
+                    btn.addClass("like-active")
+                }
+                // 조회 실패
+                if (res.result == 'fail' && res.message != undefined) {
+                    alert(res.message)
+                }
+            }
+            , error: function (error) {
+                console.log("ajax 실패", error)
+            }
+        })
+    }
 </script>
 
 <div class="wrapper">
@@ -260,7 +335,7 @@
                     </div>
                 </div>
                 <div id="header-short3">
-                    <button><i class="fa-solid fa-heart"></i></button>
+                    <button id="btn-like"><i class="fa-solid fa-heart"></i></button>
                     <button onclick="location.replace('#content-right')">이 프로젝트 후원하기</button>
                 </div>
             </div>

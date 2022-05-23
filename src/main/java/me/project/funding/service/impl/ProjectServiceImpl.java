@@ -18,6 +18,7 @@ import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -151,5 +152,31 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectDTO> list = projectMapper.findAllByFilterAndOrder(pagination);
 
         return list;
+    }
+
+    @Override
+    public Map<String, Object> checkLike(int projectNo, int memberNo, Map<String, Object> jsonResponse) {
+        int result = projectMapper.findLike(projectNo, memberNo);
+
+        if (result == 0) {
+            // insert code
+            projectMapper.insertLike(projectNo, memberNo);
+            jsonResponse.put("success", true);
+            jsonResponse.put("message", "해당 프로젝트를 Like 목록에 추가하셨습니다.");
+        } else if (result == 1) {
+            // delete code
+            projectMapper.deleteLike(projectNo, memberNo);
+            jsonResponse.put("success", false);
+            jsonResponse.put("message", "좋아요를 취소하셨습니다.");
+        } else {
+            jsonResponse.put("fail", true);
+            jsonResponse.put("message", "DB 처리과정에서 오류");
+        }
+        return jsonResponse;
+    }
+
+    @Override
+    public int getLikeResult(int projectNo, int memberNo) {
+        return projectMapper.findLike(projectNo, memberNo);
     }
 }

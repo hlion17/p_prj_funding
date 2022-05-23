@@ -5,6 +5,7 @@ import me.project.funding.dto.CategoryDTO;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.dto.ProjectDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -72,4 +73,26 @@ public interface ProjectMapper {
      * @return 조회된 후원자 수
      */
     int getContributorsCntByProjectNo(int projectNo);
+
+    /**
+     * 좋와요 여부 조회
+     * @param projectNo 프로젝트 식별값
+     * @param memberNo 회원 식별값
+     * @return 조회 결과 (0 - 좋아요를 누른적 없음, 1 - 좋아요를 누른적 있음)
+     */
+    int findLike(@Param("projectNo") int projectNo, @Param("memberNo") int memberNo);
+
+    /**
+     * 프로젝트에 좋아요를 누른다.(?)
+     * @param projectNo 프로젝트 식별값
+     * @param memberNo 회원 식별값
+     */
+    void insertLike(@Param("projectNo") int projectNo, @Param("memberNo") int memberNo);
+
+    /**
+     * 프로젝트 좋아요 취소
+     * @param projectNo 프로젝트 식별값
+     * @param memberNo 회원 식별값
+     */
+    void deleteLike(@Param("projectNo") int projectNo, @Param("memberNo") int memberNo);
 }

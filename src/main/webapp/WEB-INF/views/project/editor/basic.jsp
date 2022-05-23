@@ -192,7 +192,7 @@
     $(document).ready(function () {
 
         // ck Editor 적용
-        CKEDITOR.replace("projectIntro-ck");
+        //CKEDITOR.replace("projectIntro-ck");
         // 페이지 로드시 select 태그에 해당 프로젝트 저장된 카테고리 선택
         const select = document.querySelector("#select-category")
         for (i = 0; select.length; i++) {
@@ -257,11 +257,13 @@
             // 기본정보
             let editedProjectTitle = $("input[name=projectTitle]").val()
             let editedCategoryId = $("#select-category option:selected").val()
+            let editedProjectIntro = $("textarea[name=projectIntro]").val()
             let editedProjectImage = $("#upload-result img").prop("src")
             // 불러온 내용에서 변경된 사항이 있는 경우
             if (loadedProjectTitle != editedProjectTitle
                 || loadedCategoryId != editedCategoryId
-                || loadedProjectImage != editedProjectImage) {
+                || loadedProjectImage != editedProjectImage
+                || loadedProjectIntro != editedProjectIntro) {
                 // 아래 중복 로직, 함수로 빼면 ck 에디터 쪽에 있는
                 // 버튼 변경 코드 중복 제거할 수 있지 않을까?
                 $("#save-project").removeAttr("disabled")
@@ -272,19 +274,19 @@
                 $("#save-project").removeClass("save-project")
             }
         })
-        // 프로젝트 소개
-        CKEDITOR.instances["projectIntro-ck"].on("instanceReady", function(){
-            this.document.on("keyup", function () {
-                let editedProjectIntro = CKEDITOR.instances['projectIntro-ck'].getData()
-                if (loadedProjectIntro != editedProjectIntro) {
-                    $("#save-project").removeAttr("disabled")
-                    $("#save-project").addClass("save-project")
-                    return false
-                }
-                $("#save-project").attr("disabled", "disabled")
-                $("#save-project").removeClass("save-project")
-            });
-        });
+        // 프로젝트 소개 변경 감지
+        // CKEDITOR.instances["projectIntro-ck"].on("instanceReady", function(){
+        //     this.document.on("keyup", function () {
+        //         let editedProjectIntro = CKEDITOR.instances['projectIntro-ck'].getData()
+        //         if (loadedProjectIntro != editedProjectIntro) {
+        //             $("#save-project").removeAttr("disabled")
+        //             $("#save-project").addClass("save-project")
+        //             return false
+        //         }
+        //         $("#save-project").attr("disabled", "disabled")
+        //         $("#save-project").removeClass("save-project")
+        //     });
+        // });
         // document onload 마지막
     })
 

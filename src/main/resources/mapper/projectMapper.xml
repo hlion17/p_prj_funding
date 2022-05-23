@@ -110,12 +110,13 @@
                 , budget_plan =NVL(#{budgetPlan},budget_plan)
                 , schedule_plan = NVL(#{schedulePlan}, schedule_plan)
                 , project_image = NVL(#{projectImage}, project_image)
+                <if test="projectPrice != 0">
                 , project_price = NVL(#{projectPrice}, project_price)
+                </if>
                 , open_date = NVL(#{openDate}, open_date)
                 , close_date = NVL(#{closeDate}, close_date)
                 , delivery_date = NVL(#{deliveryDate}, delivery_date)
                 , project_content = NVL(#{projectContent}, project_content)
-                , fund_price = NVL(#{fundPrice}, fund_price)
         where project_no = #{projectNo}
     </update>
 
@@ -196,5 +197,21 @@
             ) po on p.project_no = po.project_no
         where p.project_no = #{projectNo}
     </select>
+
+    <select id="findLike" parameterType="int" resultType="int">
+        select count(*)
+        from project_like
+        where project_no = #{projectNo} and member_no = #{memberNo}
+    </select>
+
+    <insert id="insertLike" parameterType="int">
+        insert into project_like (like_no, project_no, member_no)
+        values (project_like_seq.nextval, #{projectNo}, #{memberNo})
+    </insert>
+
+    <delete id="deleteLike" parameterType="int">
+        delete project_like
+        where project_no = #{projectNo} and member_no = #{memberNo}
+    </delete>
 
 </mapper>

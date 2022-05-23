@@ -7,6 +7,7 @@ import me.project.funding.dto.ProjectDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProjectService {
     /**
@@ -61,4 +62,22 @@ public interface ProjectService {
      * @return DTO 조건이 반영된 프로젝트 리스트
      */
     List<ProjectDTO> getPageList(Pagination pagination);
+
+    /**
+     * 좋아요 기능
+     * - 이미 좋아요 되있는 경우 취소, 없는 경우 좋아요
+     * @param projectNo 프로젝트 식별값
+     * @param memberNo 회원 식별값
+     * @param jsonResponse 좋아요 처리 결과 응답 객체
+     * @return jsonResponse 에 처리 결과를 담아 그대로 반환
+     */
+    Map<String, Object> checkLike(int projectNo, int memberNo, Map<String, Object> jsonResponse);
+
+    /**
+     * 프로젝트 좋아요 여부 조회
+     * @param projectNo
+     * @param memberNo
+     * @return
+     */
+    int getLikeResult(int projectNo, int memberNo);
 }
