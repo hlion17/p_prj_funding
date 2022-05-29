@@ -387,4 +387,74 @@ public class ProjectController {
         log.info("조회된 결과: {}", result);
         return mav;
     }
+
+    // not tested
+    @GetMapping("/projects/like")
+    @ResponseBody
+    public Map<String, Object> getLike(int projectNo, HttpSession session) {
+        log.info("[/projects/like][GET]");
+        log.info("요청 파라미터: {}", projectNo);
+        Map<String, Object> jsonResponse = new HashMap<>();
+
+        // 요청 파라미터 검증 (프로젝트 식별값)
+        if (projectNo < 1) {
+            log.error("잘못된 프로젝트 식별값");
+            jsonResponse.put("result", "fail");
+            jsonResponse.put("message", "잘못된 프로젝트 요청");
+            return jsonResponse;
+        }
+        // 로그인 세션 확인
+        if (session.getAttribute("loginMemberNo") == null) {
+            log.error("로그인 정보 없음");
+            jsonResponse.put("result", "noLoginInfo");
+            jsonResponse.put("message", "로그인 정보 없음");
+            return jsonResponse;
+        }
+        // 로그인 회원 식별값
+        int memberNo = (Integer) session.getAttribute("loginMemberNo");
+
+        if (projectService.getLikeResult(projectNo, memberNo) == 1) {
+            log.info("좋아요 조회");
+            jsonResponse.put("result", "success");
+        } else {
+            log.info("조회된 좋아요 없음");
+            jsonResponse.put("result", "fail");
+        }
+
+        return jsonResponse;
+    }
+
+    // not tested
+    @PostMapping("/projects/like")
+    @ResponseBody
+    public Map<String, Object> likeCheck(int projectNo, HttpSession session) {
+        log.info("[/projects/like][GET]");
+        Map<String, Object> jsonResponse = new HashMap<>();
+
+        // 요청 파라미터 확인 (프로젝트 식별값)
+        if (projectNo < 1) {
+            log.error("유효하지 않은 프로젝트 식별값");
+            jsonResponse.put("error", "잘못된 클라이언트 요청");
+            jsonResponse.put("message", "잘못된 프로젝트 입니다.");
+            return jsonResponse;
+        }
+        log.info("프로젝트 식별값: {}", projectNo);
+
+        // 로그인 검증
+        if (session.getAttribute("loginMemberNo") == null
+                || "".equals(session.getAttribute("loginMemberNo"))) {
+            log.error("세션 로그인 정보가 존재하지 않습니다.");
+            jsonResponse.put("error", "잘못된 클라이언트 요청");
+            jsonResponse.put("msg", "로그인 세션 정보가 존재하지 않음");
+            return jsonResponse;
+        }
+        log.info("로그인 회원 식별값: {}", session.getAttribute("loginMemberNo"));
+
+        // 회원 식별값 (세션)
+        int memberNo = (Integer) session.getAttribute("loginMemberNo");
+
+        // 좋아요 여부 조회
+        // - 조회 결과가 없으면 insert, 있으면 delete
+        return projectService.checkLike(projectNo, memberNo, jsonResponse);
+    }
 }

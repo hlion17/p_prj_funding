@@ -121,7 +121,7 @@
         var order = $("select[name=order]").val();
 
         console.log(
-            'cuarPage: ' + curPage
+            'curPage: ' + curPage
             + ' / keyward: ' + keyword
             + ' / category: ' + category
             + ' / filter: ' + filter
