@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -20,9 +21,10 @@ public class ChatController {
 
     // 채팅 리스트 화면
     @GetMapping("/room")
-    public String rooms() {
+    public ModelAndView rooms(ModelAndView mav) {
         log.info("[/chat/room][GET]");
-        return "chat/room";
+        mav.setViewName("chat/room");
+        return mav;
     }
 
     // 모든 채팅방 목록 반환

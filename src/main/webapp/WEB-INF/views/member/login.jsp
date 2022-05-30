@@ -31,14 +31,19 @@
                 },
                 success: function(res) {
                     console.log(res)
-                    alert(res.msg)
-                    if (res.result == 1) {
-                        location.href = "/"
+                    if (res.msg != undefined) {
+                        alert(res.msg)
+                        return false;
+                    }
+                    if (res.dest != undefined) {
+                        location.href = res.dest;
+                    } else {
+                        location.href = '/';
                     }
                 },
                 error: function(request, status, error) {
-                    alert("code: " + request.status + "\n" +
-                        "Message: " + request.respenseJSON.message)
+                    // alert("code: " + request.status + "\n" +
+                    //     "Message: " + request.respenseJSON.message)
                 }
             })
 

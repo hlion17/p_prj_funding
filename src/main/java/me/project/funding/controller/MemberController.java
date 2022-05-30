@@ -46,31 +46,33 @@ public class MemberController {
     @PostMapping("/member/login")
     public ModelAndView loginProcess(MemberDTO member, HttpSession session) {
         log.info("[/member/login][POST]");
+        ModelAndView mav = new ModelAndView();
 
-        ModelAndView mav = new ModelAndView("jsonView");
-        Map<String, Object> model = mav.getModel();
-
+        // 로그인 검증
         MemberDTO result = memberService.login(member);
 
+        // 로그인 검증 결과에 따른 View 처리
         if (result == null) {
-            model.put("result", -1);
-            model.put("msg", "로그인 실패");
+            mav.setViewName("jsonView");
+            mav.addObject("result", -1);
+            mav.addObject("msg", "로그인 실패");
+            return mav;
         } else if (result.getGrade() == 3) {
-            model.put("result", -1);
-            model.put("msg", "탈퇴한 회원 입니다.");
+            mav.setViewName("jsonView");
+            mav.addObject("result", -1);
+            mav.addObject("msg", "이미 탈퇴한 회원입니다.");
+            return mav;
         } else {
             // 모든 이외(else) 상황을 로그인 성공으로 처리해도 되는 것인가
             // 예상하지 못한 결과에도 로그인 성공 처리하는 것은 아닌지
             // login service 에서 로그인 성공시 status 값을 추가 하고
             // status 값을 if 문으로 확인하는 방식 생각해보기
-            model.put("result", 1);
-            model.put("msg", "로그인 성공");
+            mav.setViewName("jsonView");
             session.setAttribute("loginId", result.getId());
             session.setAttribute("loginMemberNo", result.getMemberNo());
             log.info("로그인결과: {}", result);
+            return mav;
         }
-        
-        return mav;
     }
 
     @GetMapping("/member/logout")
