@@ -131,7 +131,7 @@
     </div>
     <div id="likeProject-wrapper">
         <c:forEach var="p" items="${list}">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" onclick="location.href='/project/'+${p.projectNo}">
                 <%-- 테스트 영역 --%>
                 <div class="col project-card" data-projectNo="${p.projectNo}">
                     <!-- 카드 영역 -->

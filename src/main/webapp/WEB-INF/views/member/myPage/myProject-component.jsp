@@ -21,11 +21,14 @@
                     </div>
                 </div>
                 <div class="myProject-button-area">
-                    <c:if test="${p.projectStep eq 0 || p.projectStep eq 3}">
-                        <div class="btn-manage">관리</div>
+                    <c:if test="${p.projectStep eq 0}">
+                        <div class="btn-manage" data-projectNo="${p.projectNo}" data-projectStep="${p.projectStep}" onclick="manage(this)">관리</div>
+                    </c:if>
+                    <c:if test="${p.projectStep eq 3 || p.projectStep eq 4}">
+                        <div class="btn-manage" data-projectNo="${p.projectNo}" data-projectStep="${p.projectStep}" onclick="manage(this)">바로가기</div>
                     </c:if>
                     <c:if test="${p.projectStep eq 0 || p.projectStep eq 2}">
-                        <div class="btn-delete">삭제</div>
+                        <div class="btn-delete" data-projectNo="${p.projectNo}" data-projectTitle="${p.projectTitle}" onclick="del(this)">삭제</div>
                     </c:if>
                 </div>
             </div>

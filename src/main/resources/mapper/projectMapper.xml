@@ -253,7 +253,7 @@
     </select>
 
     <select id="findMemberProjects" parameterType="int" resultType="me.project.funding.dto.ProjectDTO">
-        select pj.project_title, pj.project_intro, pj.project_image, pj.project_step, st.step_name
+        select pj.project_title, pj.project_intro, pj.project_image, pj.project_step, st.step_name, pj.project_no
         from project pj
             join project_step_tb st on pj.project_step = st.project_step
         where member_no = #{memberNo}

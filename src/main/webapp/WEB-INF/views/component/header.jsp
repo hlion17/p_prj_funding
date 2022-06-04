@@ -22,7 +22,7 @@
             left: 0;
             text-align: left;
             background: white;
-            z-index: 999;
+            z-index: 1000;
         }
         #detail-menu ul {
             padding: 0px;
@@ -172,8 +172,7 @@
                 <c:when test="${not empty sessionScope.loginId}">
                 <div class="col-md-3 text-end d-flex justify-content-end">
                     <button type="button" class="btn btn-outline-primary me-2" onclick="location.href='/member/logout'">로그아웃</button>
-                    <%--<button type="button" class="btn btn-primary" onclick="location.href='/member/detail?id=${sessionScope.loginId}'">회원정보</button>
-                    <button type="button" class="btn btn-primary" onclick="location.href='/project/my/${sessionScope.loginMemberNo}'">(임시)</button>--%>
+                    <%--<button type="button" class="btn btn-primary" onclick="location.href='/member/detail?id=${sessionScope.loginId}'">회원정보</button>--%>
                     <div id="member-detail">
                         <button id="toggletest" class="btn btn-primary">MyPage</button>
                         <div id="detail-menu">

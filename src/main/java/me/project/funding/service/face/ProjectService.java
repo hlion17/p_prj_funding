@@ -101,4 +101,11 @@ public interface ProjectService {
      * @return 조회된 프로젝트 리스트
      */
     List<ProjectDTO> getMemberProjects(int memberNo, int projectStep);
+
+    /**
+     * 프로젝트 삭제
+     * @param projectNo 삭제할 프로젝트 식별값
+     * @return 프로젝트 삭제 결과
+     */
+    int removeProject(int projectNo);
 }

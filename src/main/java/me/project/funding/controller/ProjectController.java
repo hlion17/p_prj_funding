@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.lang.reflect.Member;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -231,9 +232,11 @@ public class ProjectController {
      * @return 메인페이지로 리다이렉트
      */
     @PostMapping("/project/delete")
-    public ModelAndView deleteProject(int projectNo) {
+    @ResponseBody
+    public Map<String, Object> deleteProject(int projectNo) {
         log.info("[/project/delete][POST]");
-        ModelAndView mav = new ModelAndView("redirect:/");
+        Map<String, java.lang.Object> jsonResult = new HashMap<>();
+        //ModelAndView mav = new ModelAndView("redirect:/");
 
         // 파라미터 검증
         if (projectNo < 1) {
@@ -243,9 +246,16 @@ public class ProjectController {
         log.info("프로젝트 업데이트 파라미터: {}", projectNo);
 
         // 작성중인 프로젝트 삭제
-        projectService.deleteOnWritingProject(projectNo);
+        //projectService.deleteOnWritingProject(projectNo);
+        int result = projectService.removeProject(projectNo);
 
-        return mav;
+        if (result == 1) {
+            jsonResult.put("message", "프로젝트 삭제 성공");
+        } else {
+            jsonResult.put("message", "프로젝트 삭제 실패");
+        }
+
+        return jsonResult;
     }
 
     // not tested
@@ -358,33 +368,6 @@ public class ProjectController {
         model.put("project", project);
         model.put("contributors", contributors);
         model.put("rewards", rewards);
-        return mav;
-    }
-
-    // not tested
-    // 프로제트 삭제를 시험하기 위해 임시로 만듬
-    @GetMapping("/project/my/{memberNo}")
-    public ModelAndView getMyProject(@PathVariable int memberNo, HttpSession session) {
-        log.info("[/project/my/{}][GET]", memberNo);
-        ModelAndView mav = new ModelAndView("project/test");
-        Map<String, Object> model = mav.getModel();
-
-        if (memberNo < 1) {
-            log.error("올바르지 않는 회원 식별값: {}", memberNo);
-            throw new RuntimeException("요청 파라미터가 올바르지 않습니다.");
-        }
-
-        MemberDTO member = new MemberDTO();
-        member.setMemberNo(memberNo);
-        member.setId((String) session.getAttribute("loginId"));
-        log.info("파라미터: {}", member);
-
-        // 특정 회원의 프로젝트를 가져온다.
-        List<ProjectDTO> result = projectService.getOnWritingProject(member);
-
-        // View 전달 데이터
-        model.put("list", result);
-        log.info("조회된 결과: {}", result);
         return mav;
     }
 

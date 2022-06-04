@@ -81,12 +81,12 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-
+위에 광고성 프로젝트 삽입
 <main>
     <section id="test-area">
         <div><h2>메인에 들어갈 프로젝트 목록</h2></div>
         <div>
-
+            메인에 나열할 프로젝트 구상
         </div>
     </section>
     <section id="ranking-area">
@@ -94,8 +94,9 @@
         <div class="ranking-box">
             <div><span>1</span></div>
             <div>프로젝트 개요</div>
-            <div><img src="/resources/img/altImg.png" alt="이미지 없음"></div>
+            <div><img src="" alt="이미지 없음"></div>
         </div>
+        좋아요 많은 순 프로젝트 노출
     </section>
 </main>
 

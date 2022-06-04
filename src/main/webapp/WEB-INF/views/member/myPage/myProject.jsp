@@ -109,9 +109,11 @@
     }
     .myProject-button-area > .btn-manage {
         background: rgba(0, 0, 0, 0.1);
+        cursor: pointer;
     }
     .myProject-button-area > .btn-delete {
         background: rgba(255, 140, 0, 0.3);
+        cursor: pointer;
     }
 </style>
 
@@ -131,6 +133,7 @@
         //         }
         //     }
         // })
+        // 프로젝트 구분에 따른 조회
         $("#myProject-nav li").click(function () {
             const target = $(this)
             $.ajax({
@@ -149,7 +152,39 @@
                 }
             })
         })
-    })
+        // 프로젝트 삭제
+        $(".btn-delete").click(function () {
+            const projectNo = $(this).attr("data-projectNo")
+            const projectTitle = $(this).attr("data-projectTitle")
+            if (confirm("정말로 \"" + projectTitle + "\" 프로젝트를 삭제하시겠습니까?")) {
+                $.ajax({
+                    method: "POST"
+                    , url: "/project/delete"
+                    , dataType: "json"
+                    , data: {projectNo: projectNo}
+                    , success: function (res) {
+                        if (res.message != "" && res.message != undefined) {
+                            alert(res.message)
+                            location.href="/myPage/myProject"
+                        }
+                    }
+                    , error: function (error) {
+                        console.log("error: ", error)
+                    }
+                })
+            }
+        })
+        // 프로젝트 관리 및 바로가기
+        $(".btn-manage").click(function () {
+            const projectNo = $(this).attr("data-projectNo")
+            const projectStep = $(this).attr("data-projectStep")
+            if (projectStep == 0) {
+                location.href="/project/editor/"+ projectNo + "/basic";
+            } else if (projectStep == 3 || projectStep == 4) {
+                location.href="/project/"+ projectNo
+            }
+        });
+    })  // end of document on load
     // 진행상태 색
     function stepColor() {
         const stepName = $(".content-box div:first-child")
@@ -174,6 +209,38 @@
                     break
 
             }
+        }
+    }
+    // 프로젝트 관리 및 바로가기
+    function manage(e) {
+        const projectNo = $(e).attr("data-projectNo")
+        const projectStep = $(e).attr("data-projectStep")
+        if (projectStep == 0) {
+            location.href="/project/editor/"+ projectNo + "/basic";
+        } else if (projectStep == 3 || projectStep == 4) {
+            location.href="/project/"+ projectNo
+        }
+    }
+    // 프로젝트 삭제
+    function del(e) {
+        const projectNo = $(e).attr("data-projectNo")
+        const projectTitle = $(e).attr("data-projectTitle")
+        if (confirm("정말로 \"" + projectTitle + "\" 프로젝트를 삭제하시겠습니까?")) {
+            $.ajax({
+                method: "POST"
+                , url: "/project/delete"
+                , dataType: "json"
+                , data: {projectNo: projectNo}
+                , success: function (res) {
+                    if (res.message != "" && res.message != undefined) {
+                        alert(res.message)
+                        location.href="/myPage/myProject"
+                    }
+                }
+                , error: function (error) {
+                    console.log("error: ", error)
+                }
+            })
         }
     }
 </script>
@@ -211,11 +278,14 @@
                     </div>
                 </div>
                 <div class="myProject-button-area">
-                    <c:if test="${p.projectStep eq 0 || p.projectStep eq 3}">
-                    <div class="btn-manage">관리</div>
+                    <c:if test="${p.projectStep eq 0}">
+                    <div class="btn-manage" data-projectNo="${p.projectNo}" data-projectStep="${p.projectStep}">관리</div>
+                    </c:if>
+                    <c:if test="${p.projectStep eq 3 || p.projectStep eq 4}">
+                        <div class="btn-manage" data-projectNo="${p.projectNo}" data-projectStep="${p.projectStep}">바로가기</div>
                     </c:if>
                     <c:if test="${p.projectStep eq 0 || p.projectStep eq 2}">
-                    <div class="btn-delete">삭제</div>
+                    <div class="btn-delete" data-projectNo="${p.projectNo}" data-projectTitle="${p.projectTitle}">삭제</div>
                     </c:if>
                 </div>
             </div>

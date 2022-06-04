@@ -194,4 +194,9 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectDTO> getMemberProjects(int memberNo, int projectStep) {
         return projectMapper.findMemberProjects(memberNo, projectStep);
     }
+
+    @Override
+    public int removeProject(int projectNo) {
+        return projectMapper.delete(projectNo);
+    }
 }
