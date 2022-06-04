@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ProjectMapper {
@@ -95,4 +96,25 @@ public interface ProjectMapper {
      * @param memberNo 회원 식별값
      */
     void deleteLike(@Param("projectNo") int projectNo, @Param("memberNo") int memberNo);
+
+    /**
+     * 후원 프로젝트 목록 조회
+     * @param paramMap 회원 식별값이 담긴 DTO, 검색어
+     * @return 후원 프로젝트 목록
+     */
+    List<Map<String, Object>> findAllSupportProject(Map<String, Object> paramMap);
+
+    /**
+     * 회원이 좋아요 누른 프로젝트 조회
+     * @param memberNo 회원 식별값
+     * @return 좋아요 누른 프로젝트 목록
+     */
+    List<ProjectDTO> findLikeProjects(Integer memberNo);
+
+    /**
+     * 회원이 작성한 모든 프로젝트 조회
+     * @param memberNo 회원 식별값
+     * @return 조회된 프로젝트 리스트
+     */
+    List<ProjectDTO> findMemberProjects(@Param("memberNo") int memberNo, @Param("projectStep") int projectStep);
 }

@@ -25,12 +25,10 @@
         from project
     </sql>
 
-
     <resultMap id="ProjectWithMember" type="me.project.funding.dto.ProjectDTO">
         <association property="me.project.funding.dto.MemberDTO" column="memberNo" javaType="me.project.funding.dto.MemberDTO" select="selectMember">
         </association>
     </resultMap>
-
     <resultMap id="ProjectWithCategory" type="me.project.funding.dto.ProjectDTO">
         <id property="projectNo" column="project_no" />
         <result property="memberNo" column="member_no" />
@@ -53,12 +51,11 @@
             <result property="categoryName" column="category_name" />
         </association>
     </resultMap>
-
     <resultMap id="RewardWithProject" type="me.project.funding.dto.RewardDTO">
         <association property="me.project.funding.dto.ProjectDTO" column="projectNo" javaType="me.project.funding.dto.ProjectDTO" select="selectProject">
         </association>
     </resultMap>
-    
+
     <select id="selectMember" resultType="me.project.funding.dto.MemberDTO">
         select * from member
     </select>
@@ -69,16 +66,12 @@
         select * from category
     </select>
 
+
     <select id="findOnWritingProject" parameterType="me.project.funding.dto.MemberDTO" resultType="me.project.funding.dto.ProjectDTO">
         <include refid="selectFromProject"/>
         where member_no = #{memberNo}
             and project_step = 0
     </select>
-
-    <!--<select id="findByNo" parameterType="int" resultType="me.project.funding.dto.ProjectDTO">
-        <include refid="selectFromProject" />
-        where project_no = #{projectNo}
-    </select>-->
 
     <select id="findByNo" parameterType="int" resultMap="ProjectWithCategory">
         select *
@@ -214,4 +207,59 @@
         where project_no = #{projectNo} and member_no = #{memberNo}
     </delete>
 
+    <select id="findAllSupportProject" parameterType="map" resultType="map">
+        select
+            pj.project_no "projectNo"
+            , project_title "projectTitle"
+            , close_date "closeDate"
+            , p.payment_day "paymentDay"
+            , r.reward_intro "rewardIntro"
+            , p.payment_total "paymentTotal"
+            , pj.project_image "projectImage"
+        from payment p
+                 join order_tb o on p.order_no = o.order_no
+                 join reward_order ro on o.order_no = ro.order_no
+                 join reward r on ro.reward_no = r.reward_no
+                 join project pj on p.project_no = pj.project_no
+        <where>
+            pj.member_no = #{memberNo} and payment_status = 1
+            <if test="keyword != null and !''.equals(keyword)">
+            and pj.project_title like '%' || #{keyword} || '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="findLikeProjects" parameterType="int" resultType="me.project.funding.dto.ProjectDTO">
+        select
+            p.project_no
+             , p.member_no
+             , category_id
+             , project_title
+             , project_intro
+             , budget_plan
+             , schedule_plan
+             , project_image
+             , project_price
+             , open_date
+             , close_date
+             , delivery_date
+             , project_content
+             , fund_price
+             , project_step
+        from project_like pl
+                 join member m on pl.member_no = m.member_no
+                 join project p on pl.project_no = p.project_no
+        where pl.member_no = #{memberNo}
+    </select>
+
+    <select id="findMemberProjects" parameterType="int" resultType="me.project.funding.dto.ProjectDTO">
+        select pj.project_title, pj.project_intro, pj.project_image, pj.project_step, st.step_name
+        from project pj
+            join project_step_tb st on pj.project_step = st.project_step
+        where member_no = #{memberNo}
+        <if test="projectStep >= 0">
+        and st.project_step = #{projectStep}
+        </if>
+        order by pj.project_no
+    </select>
 </mapper>

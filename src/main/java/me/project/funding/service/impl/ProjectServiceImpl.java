@@ -179,4 +179,19 @@ public class ProjectServiceImpl implements ProjectService {
     public int getLikeResult(int projectNo, int memberNo) {
         return projectMapper.findLike(projectNo, memberNo);
     }
+
+    @Override
+    public List<Map<String, Object>> getSupportProjects(Map<String, Object> paramMap) {
+        return projectMapper.findAllSupportProject(paramMap);
+    }
+
+    @Override
+    public List<ProjectDTO> getLikeProject(Integer memberNo) {
+        return projectMapper.findLikeProjects(memberNo);
+    }
+
+    @Override
+    public List<ProjectDTO> getMemberProjects(int memberNo, int projectStep) {
+        return projectMapper.findMemberProjects(memberNo, projectStep);
+    }
 }

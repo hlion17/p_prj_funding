@@ -26,6 +26,7 @@ public class ProjectDTO {
     private int projectStep;
 
     private int sum;
+    private String stepName;
 
     // Member 테이블과 조인할 경우
     @ToString.Exclude

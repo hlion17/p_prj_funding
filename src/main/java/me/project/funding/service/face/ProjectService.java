@@ -25,6 +25,13 @@ public interface ProjectService {
     ProjectDTO getProject(int projectNo);
 
     /**
+     * 특정 회원이 후원한 프로젝트 목록을 가져온다.
+     * @param paramMap 회원 식별값이 담긴 DTO 객체, 검색어
+     * @return 후원 프로젝트 목록
+     */
+    List<Map<String, Object>> getSupportProjects(Map<String, Object> paramMap);
+
+    /**
      * 프로젝트 인트로 내용을 적어 프로젝트를 생성한다.
      * @param project 프로젝트 인트로 내용이 들어 있는 프로젝트 DTO 객체
      */
@@ -80,4 +87,18 @@ public interface ProjectService {
      * @return
      */
     int getLikeResult(int projectNo, int memberNo);
+
+    /**
+     * 좋아요 누른 프로젝트 조회
+     * @param memberNo 회원식별값
+     * @return
+     */
+    List<ProjectDTO> getLikeProject(Integer memberNo);
+
+    /**
+     * 회원이 작성한 모든 프로젝트 조회
+     * @param memberNo 회원 식별값
+     * @return 조회된 프로젝트 리스트
+     */
+    List<ProjectDTO> getMemberProjects(int memberNo, int projectStep);
 }

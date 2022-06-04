@@ -95,6 +95,7 @@ public class MemberController {
         return mav;
     }
 
+    // myProfile 로 대체
     @GetMapping("/member/update")
     public ModelAndView updatePage(MemberDTO member) {
         log.info("[/member/update][GET]");
@@ -105,13 +106,26 @@ public class MemberController {
     }
 
     @PostMapping("/member/update")
-    public ModelAndView update(MemberDTO member, RedirectAttributes rtts) {
+    public ModelAndView update(MemberDTO member, HttpSession session) {
         log.info("[/member/update][POST]");
-        ModelAndView mav = new ModelAndView("redirect:/member/detail?id=" + member.getId());
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("redirect:/myPage/profile");
 
+        // 세션 로그인 확인
+        if (session.getAttribute("loginMemberNo") == null || session.getAttribute("loginId") == null) {
+            log.error("로그인 되지 않음");
+            throw new RuntimeException("로그인 상태 확인");
+        }
+
+        member.setMemberNo((Integer) session.getAttribute("loginMemberNo"));
+        member.setId((String) session.getAttribute("loginId"));
+
+        log.info("업데이트 파마미터: {}", member);
+        // 회원정보 업데이트
         MemberDTO editedMember = memberService.editMemberInfo(member);
-
-        rtts.addFlashAttribute("member", editedMember);
+        // 리다이렉트 할 꺼면 위에 코드에서 MemberDTO 받아올 필요 없음
+        //log.info("조회된 정보: {}", editedMember);
+        //mav.addObject("member", editedMember);
         return mav;
     }
 }

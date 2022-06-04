@@ -7,6 +7,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Insert title here</title>
+
+    <style>
+        /* 회원 메뉴 */
+        #member-detail {
+            position: relative;
+        }
+        #detail-menu {
+            display: none;
+            position: absolute;
+            border: 1px solid black;
+            width: 200px;
+            top: 50px;
+            left: 0;
+            text-align: left;
+            background: white;
+            z-index: 999;
+        }
+        #detail-menu ul {
+            padding: 0px;
+            margin: 0px;
+        }
+        #detail-menu li {
+            list-style: none;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        #detail-menu div {
+            margin: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        #detail-menu li:hover {
+            /*background: lightgrey;*/
+            background: rgba(240, 240, 240);
+        }
+
+    </style>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -74,6 +111,22 @@
     // 웹소켓 접속
     connect();
     </script>
+
+    <script>
+        $(document).ready(function () {
+            // 마이페이지 메뉴 토글
+            $("#toggletest").click(function () {
+                $("#detail-menu").toggle(100)
+            })
+            // 마이페이지 메뉴 감추기
+            $("html").click(function (e) {
+                if ($(e.target.id).selector != 'detail-menu'
+                        && $(e.target.id).selector != 'toggletest') {
+                    $("#detail-menu").hide()
+                }
+            })
+        })
+    </script>
 </head>
 <body>
 
@@ -101,7 +154,7 @@
                         <a class="nav-link" href="/project/start">프로젝트 올리기</a>
                     </li>
                     </c:if>
-                    <li class="nav-item dropdown">
+                    <%--<li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             임시메뉴
                         </a>
@@ -113,14 +166,31 @@
                             </li>
                             <li><a class="dropdown-item" href="#">임시메뉴3</a></li>
                         </ul>
-                    </li>
+                    </li>--%>
                 </ul>
                 <c:choose>
                 <c:when test="${not empty sessionScope.loginId}">
-                <div class="col-md-3 text-end">
+                <div class="col-md-3 text-end d-flex justify-content-end">
                     <button type="button" class="btn btn-outline-primary me-2" onclick="location.href='/member/logout'">로그아웃</button>
-                    <button type="button" class="btn btn-primary" onclick="location.href='/member/detail?id=${sessionScope.loginId}'">회원정보</button>
-                    <button type="button" class="btn btn-primary" onclick="location.href='/project/my/${sessionScope.loginMemberNo}'">(임시)</button>
+                    <%--<button type="button" class="btn btn-primary" onclick="location.href='/member/detail?id=${sessionScope.loginId}'">회원정보</button>
+                    <button type="button" class="btn btn-primary" onclick="location.href='/project/my/${sessionScope.loginMemberNo}'">(임시)</button>--%>
+                    <div id="member-detail">
+                        <button id="toggletest" class="btn btn-primary">MyPage</button>
+                        <div id="detail-menu">
+                            <div>
+                                <ul>
+                                    <li onclick="location.href='/myPage/profile'">회원관리</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li onclick="location.href='/myPage/support'">후원현황</li>
+                                    <li onclick="location.href='/myPage/likeProject'">관심프로젝트</li>
+                                    <li onclick="location.href='/myPage/myProject'">내가 만든 프로젝트</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 </c:when>
                 <c:otherwise>

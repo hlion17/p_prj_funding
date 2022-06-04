@@ -54,7 +54,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns(LOGIN_URL_PATTERNS);
         // 회원서비스 인터셉터
-        List<String> MEMBER_URL_PATTERNS = Arrays.asList("/chat/room");
+        List<String> MEMBER_URL_PATTERNS = Arrays.asList("/chat/room", "/payment/**", "/myPage/**");
         registry.addInterceptor(new MemberInterceptor())
                 .addPathPatterns(MEMBER_URL_PATTERNS);
     }

@@ -27,7 +27,11 @@
 
     <update id="update" parameterType="me.project.funding.dto.MemberDTO">
         update member
-        set nick = #{nick}, email = #{email}, phone = #{phone}
+        <trim prefix="set" suffixOverrides=",">
+        <if test="nick != null">nick = #{nick},</if>
+        <if test="email != null">email = #{email},</if>
+        <if test="phone != null">phone = #{phone},</if>
+        </trim>
         where member_no = #{memberNo}
     </update>
 </mapper>
