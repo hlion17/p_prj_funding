@@ -38,7 +38,7 @@
                     if (res.dest != undefined) {
                         location.href = res.dest;
                     } else {
-                        location.href = '/';
+                        location.href = '/main';
                     }
                 },
                 error: function(request, status, error) {

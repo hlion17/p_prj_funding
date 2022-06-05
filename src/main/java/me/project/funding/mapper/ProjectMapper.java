@@ -117,4 +117,10 @@ public interface ProjectMapper {
      * @return 조회된 프로젝트 리스트
      */
     List<ProjectDTO> findMemberProjects(@Param("memberNo") int memberNo, @Param("projectStep") int projectStep);
+
+    /**
+     * 좋아요를 많이 받는 순으로 프로젝트 조회
+     * @return 조회된 프로젝트 리스트
+     */
+    List<ProjectDTO> findRankedProjects();
 }

@@ -108,4 +108,10 @@ public interface ProjectService {
      * @return 프로젝트 삭제 결과
      */
     int removeProject(int projectNo);
+
+    /**
+     * 좋아요 순 랭킹 프로젝트 조회
+     * @return 조회된 프로젝트
+     */
+    List<ProjectDTO> getRankedProject();
 }

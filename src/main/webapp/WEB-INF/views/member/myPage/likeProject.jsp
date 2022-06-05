@@ -142,7 +142,7 @@
                                 <img src="${p.projectImage }" alt="준비중" style="min-height: 250px;">
                             </c:if>
                             <c:if test="${empty p.projectImage }">
-                                <img src="/resources/img/altImg.png" style="min-height: 250px;">
+                                <img src="/resources/img/altImg1.png" style="min-height: 250px;">
                             </c:if>
                         </div>
                         <!-- 카드 몸통 -->

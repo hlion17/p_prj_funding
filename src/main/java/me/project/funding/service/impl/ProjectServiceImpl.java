@@ -199,4 +199,9 @@ public class ProjectServiceImpl implements ProjectService {
     public int removeProject(int projectNo) {
         return projectMapper.delete(projectNo);
     }
+
+    @Override
+    public List<ProjectDTO> getRankedProject() {
+        return projectMapper.findRankedProjects();
+    }
 }

@@ -149,11 +149,11 @@
             left join (
                     select project_no, sum(payment_total) sum
                     from payment
-                    group by project_no
-                ) py
+                    group by project_no) py
                 on pj.project_no = py.project_no
 
         <where>
+            pj.project_step in (3, 4)
             <if test="category != null and !''.equals(category)">
                 AND category_id = #{category}
             </if>
@@ -261,5 +261,32 @@
         and st.project_step = #{projectStep}
         </if>
         order by pj.project_no
+    </select>
+
+    <select id="findRankedProjects" resultMap="ProjectWithCategory">
+        select
+            p.*
+            , c.category_name
+            , py.sum
+            , nvl(like_cnt, 0) like_cnt
+        from project p
+            left join (
+                    select project_no, count(*) like_cnt
+                    from project_like
+                    group by project_no
+                    order by like_cnt desc) pl
+                on p.project_no = pl.project_no
+            join category c
+                on p.category_id = c.category_no
+            left join (
+                    select project_no, sum(payment_total) sum
+                    from payment
+                    group by project_no) py
+                on py.project_no = p.project_no
+        where
+            like_cnt > 0
+            and p.project_step = 3
+            and rownum between 1 and 10
+        order by like_cnt desc
     </select>
 </mapper>
