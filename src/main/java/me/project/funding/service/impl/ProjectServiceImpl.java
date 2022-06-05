@@ -210,4 +210,8 @@ public class ProjectServiceImpl implements ProjectService {
     public int saveProjectBoard(ProjectBoardDTO board) {
         return projectMapper.insertProjectBoard(board);
     }
+
+    public List<ProjectDTO> getRankedProject() {
+        return projectMapper.findRankedProjects();
+    }
 }

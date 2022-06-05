@@ -123,4 +123,9 @@ public interface ProjectService {
      * @return 게시글 등록 결과
      */
     int saveProjectBoard(ProjectBoardDTO board);
+
+     /** 좋아요 순 랭킹 프로젝트 조회
+     * @return 조회된 프로젝트
+     */
+    List<ProjectDTO> getRankedProject();
 }

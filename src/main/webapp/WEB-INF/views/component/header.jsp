@@ -39,7 +39,7 @@
         }
         #detail-menu li:hover {
             /*background: lightgrey;*/
-            background: rgba(240, 240, 240);
+            background: rgba(240, 240, 240, 1);
         }
 
     </style>
@@ -137,7 +137,7 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
         <div class="container py-2">
-            <a class="navbar-brand" href="/">크라우드 펀딩</a>
+            <a class="navbar-brand" href="/main">크라우드 펀딩</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
