@@ -3,6 +3,7 @@ package me.project.funding.service.face;
 import me.project.funding.commons.Pagination;
 import me.project.funding.dto.CategoryDTO;
 import me.project.funding.dto.MemberDTO;
+import me.project.funding.dto.ProjectBoardDTO;
 import me.project.funding.dto.ProjectDTO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -108,4 +109,18 @@ public interface ProjectService {
      * @return 프로젝트 삭제 결과
      */
     int removeProject(int projectNo);
+
+    /**
+     * 프로젝트 게시글 전체 조회
+     * @param projectNo 프로젝트 식별값
+     * @return 조회된 게시글 목록
+     */
+    List<ProjectBoardDTO> getCommunityPosts(int projectNo);
+
+    /**
+     * 프로젝트 게시글 삽입
+     * @param board 등록할 게시글 정보
+     * @return 게시글 등록 결과
+     */
+    int saveProjectBoard(ProjectBoardDTO board);
 }

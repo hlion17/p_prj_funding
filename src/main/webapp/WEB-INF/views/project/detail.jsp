@@ -95,6 +95,9 @@
     #project-nav1 {
         border: 1px solid rgba(0, 0, 0, 0.1);
     }
+    #project-nav1 li {
+        color: #ccc;
+    }
     #project-nav2 {
         position: sticky;
         top: 60px;
@@ -121,11 +124,11 @@
         border: 1px solid #ccc;
         cursor: pointer;
     }
-    #project-nav1 li:last-child {
-        color: #ccc;
+    .nav1-select {
+        color: black!important;
     }
     /* nav1 메뉴 활성화 밑줄 */
-    .nav1-select::after{
+    .nav1-select::after {
         content: "";
         display: block;
         width: 100%;
@@ -257,6 +260,12 @@
                 }
             })
         })
+        // project-nav1 메뉴 클릭
+        $("#project-nav1 li").click(function () {
+            // 선택된 메뉴 스타일 변경
+            $("#project-nav1 li").removeClass("nav1-select")
+            $(this).addClass("nav1-select")
+        })
     })
     // 좋아요 조회
     function checkLike() {
@@ -280,6 +289,20 @@
             }
             , error: function (error) {
                 console.log("ajax 실패", error)
+            }
+        })
+    }
+    // 프로젝트의 커뮤니티 페이지
+    function getCommunityPage(projectNo) {
+        const no = projectNo
+        $.ajax({
+            method: "GET"
+            , url: "/projects/" + no + "/community"
+            , success: function (res) {
+                $("#content-wrapper").html(res)
+            }
+            , error: function (error) {
+                console.log("error: ". error)
             }
         })
     }
@@ -346,8 +369,8 @@
 <%-- 프로젝트 네비게이션 --%>
 <div id="project-nav1">
     <ul>
-        <li class="nav1-select">프로젝트 계획</li>
-        <li>커뮤니티</li>
+        <li class="nav1-select" onclick="location.href='/project/${project.projectNo}';">프로젝트 계획</li>
+        <li onclick="getCommunityPage(${project.projectNo})">커뮤니티</li>
     </ul>
 </div>
 <div id="project-nav2">

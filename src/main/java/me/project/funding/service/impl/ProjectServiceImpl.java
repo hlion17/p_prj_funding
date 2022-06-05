@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.project.funding.commons.Pagination;
 import me.project.funding.dto.CategoryDTO;
 import me.project.funding.dto.MemberDTO;
+import me.project.funding.dto.ProjectBoardDTO;
 import me.project.funding.dto.ProjectDTO;
 import me.project.funding.mapper.MemberMapper;
 import me.project.funding.mapper.ProjectMapper;
@@ -198,5 +199,15 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public int removeProject(int projectNo) {
         return projectMapper.delete(projectNo);
+    }
+
+    @Override
+    public List<ProjectBoardDTO> getCommunityPosts(int projectNo) {
+        return projectMapper.findCommunityPosts(projectNo);
+    }
+
+    @Override
+    public int saveProjectBoard(ProjectBoardDTO board) {
+        return projectMapper.insertProjectBoard(board);
     }
 }

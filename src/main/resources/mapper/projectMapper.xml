@@ -55,6 +55,17 @@
         <association property="me.project.funding.dto.ProjectDTO" column="projectNo" javaType="me.project.funding.dto.ProjectDTO" select="selectProject">
         </association>
     </resultMap>
+    <resultMap id="ProjectBoardWithMember" type="me.project.funding.dto.ProjectBoardDTO">
+        <id property="boardNo" column="board_no" />
+        <result property="projectNo" column="project_no" />
+        <result property="content" column="content" />
+        <result property="regDate" column="reg_date" />
+        <result property="writerNo" column="writer_no" />
+        <association property="member" column="member_no" javaType="me.project.funding.dto.MemberDTO">
+            <id property="memberNo" column="member_no" />
+            <result property="id" column="id" />
+        </association>
+    </resultMap>
 
     <select id="selectMember" resultType="me.project.funding.dto.MemberDTO">
         select * from member
@@ -262,4 +273,21 @@
         </if>
         order by pj.project_no
     </select>
+
+    <select id="findCommunityPosts" parameterType="int" resultMap="ProjectBoardWithMember">
+        select *
+        from project_board pb
+            join member m
+                on pb.writer_no = m.member_no
+        where project_no = #{projectNo}
+        order by reg_date desc
+    </select>
+
+    <insert id="insertProjectBoard" parameterType="me.project.funding.dto.ProjectBoardDTO">
+        <selectKey order="BEFORE" resultType="int" keyProperty="boardNo">
+            select project_board_seq.nextval from dual
+        </selectKey>
+        insert into project_board (board_no, project_no, content, writer_no)
+        values (#{boardNo}, #{projectNo}, #{content}, #{writerNo})
+    </insert>
 </mapper>

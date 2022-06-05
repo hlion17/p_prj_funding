@@ -2,10 +2,7 @@ package me.project.funding.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import me.project.funding.commons.Pagination;
-import me.project.funding.dto.CategoryDTO;
-import me.project.funding.dto.MemberDTO;
-import me.project.funding.dto.ProjectDTO;
-import me.project.funding.dto.RewardDTO;
+import me.project.funding.dto.*;
 import me.project.funding.mapper.ProjectMapper;
 import me.project.funding.service.face.MemberService;
 import me.project.funding.service.face.ProjectService;
@@ -60,6 +57,7 @@ public class ProjectController {
      * 세션에 로그인된 사용자 데이터를 가지고
      * 사용자가 작성중인 프로젝트 목록, 프로젝트 카테고리 목록을 가져와서
      * start.jsp 페이지를 렌더링 한다.
+     *
      * @param session 로그인 사용자 데이터
      * @return 진행중인 프로젝트 목록, 카테고리 목록
      */
@@ -98,6 +96,7 @@ public class ProjectController {
 
     /**
      * 작성중인 프로젝트를 편집하는 페이지에 접근한다.
+     *
      * @param projectNo 작성중인 프로젝트 식별자
      * @return 작성중인 프로젝트 정보
      */
@@ -161,6 +160,7 @@ public class ProjectController {
     /**
      * 프로젝트 인트로 정보로 프로젝트를 생성하고 해당 프로젝트 정보 반환
      * 프로젝트 편집 화면으로 이동(redirect)
+     *
      * @param project 프로젝트 인트로 정보
      * @return
      */
@@ -199,6 +199,7 @@ public class ProjectController {
 
     /**
      * 작성중인 프로젝트의 정보를 업데이트 후 메인으로 이동한다(redirect).
+     *
      * @param project 작성중인 프로젝트에 대한 업데이트 정보
      * @return 메인으로 리다이렉트
      */
@@ -228,6 +229,7 @@ public class ProjectController {
 
     /**
      * 작성중인 프로젝트를 삭제
+     *
      * @param projectNo 삭제할 프로젝트 식별값
      * @return 메인페이지로 리다이렉트
      */
@@ -259,8 +261,10 @@ public class ProjectController {
     }
 
     // not tested
+
     /**
      * 파일 정보를 받아 업로드 처리하고 업로드된 파일 url 반납
+     *
      * @param file 업로드할 파일의 정보
      * @return 업로드한 파일 url
      */
@@ -288,8 +292,10 @@ public class ProjectController {
     }
 
     // not tested
+
     /**
      * ck 에디터 이미지 파일을 올리는 요청 처리
+     *
      * @param file 업로드할 이미지 파일
      * @return 업로드 처리결과 JSON(성공여부, 파일이름(storedName), FileUrl)
      */
@@ -341,8 +347,10 @@ public class ProjectController {
     }
 
     // not tested
+
     /**
      * 개별 프로젝트 조회
+     *
      * @param projectNo 조회할 프로젝트 식별값
      * @return 조회된 프로젝트
      */
@@ -439,5 +447,44 @@ public class ProjectController {
         // 좋아요 여부 조회
         // - 조회 결과가 없으면 insert, 있으면 delete
         return projectService.checkLike(projectNo, memberNo, jsonResponse);
+    }
+
+    @GetMapping("/projects/{projectNo}/community")
+    public ModelAndView getCommunityPage(@PathVariable int projectNo) {
+        log.info("[/projects/{}/community][GET]", projectNo);
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("project/detail_community");
+
+        // 커뮤니티 게시글 조회
+        List<ProjectBoardDTO> list = projectService.getCommunityPosts(projectNo);
+        log.info("조회된 커뮤니티 게시글: {}", list);
+        mav.addObject("list", list);
+        return mav;
+    }
+
+    @PostMapping("/project/board/write")
+    @ResponseBody
+    public Map<String, Object> writeProjectBoard(ProjectBoardDTO board, HttpSession session) {
+        log.info("[/project/board/write][POST]");
+        Map<String, Object> jsonResult = new HashMap<>();
+
+        // 로그인 세션 회원 확인
+        if (session.getAttribute("loginMemberNo") == null) {
+            log.error("로그인 정보 없음");
+            jsonResult.put("error", "로그인 에러");
+            jsonResult.put("message", "로그인이 필요한 서비스입니다.");
+            return jsonResult;
+        }
+
+        board.setWriterNo((Integer) session.getAttribute("loginMemberNo"));
+
+        log.info("파라미터 확인: {}", board);
+        int result = projectService.saveProjectBoard(board);
+
+        if (result == 1) {
+            jsonResult.put("result", "success");
+        }
+
+        return jsonResult;
     }
 }

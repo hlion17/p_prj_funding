@@ -3,6 +3,7 @@ package me.project.funding.mapper;
 import me.project.funding.commons.Pagination;
 import me.project.funding.dto.CategoryDTO;
 import me.project.funding.dto.MemberDTO;
+import me.project.funding.dto.ProjectBoardDTO;
 import me.project.funding.dto.ProjectDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -117,4 +118,18 @@ public interface ProjectMapper {
      * @return 조회된 프로젝트 리스트
      */
     List<ProjectDTO> findMemberProjects(@Param("memberNo") int memberNo, @Param("projectStep") int projectStep);
+
+    /**
+     * 프로젝트의 게시글 목록 조회
+     * @param projectNo 프로젝트 식별값
+     * @return 조회된 프로젝트 게시글 목록
+     */
+    List<ProjectBoardDTO> findCommunityPosts(int projectNo);
+
+    /**
+     * 프로젝트 게시글 등록
+     * @param board 게시글 정보
+     * @return 등록 결과
+     */
+    int insertProjectBoard(ProjectBoardDTO board);
 }
