@@ -46,8 +46,6 @@
     }
     #member-info-side {
         flex-grow: 1;
-        /* 레이아웃 확인용 **************/
-        border: 1px solid black;
         padding: 20px;
     }
     #member-info-side > div {
@@ -61,8 +59,6 @@
     #member-info-wrapper {
         display: flex;
         flex-direction: column;
-        /* 레이아웃 확인용 **************/
-        border: 1px solid black;
         width: 70%;
         padding: 20px;
     }
