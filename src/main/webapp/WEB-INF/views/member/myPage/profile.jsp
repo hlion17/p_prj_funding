@@ -112,8 +112,10 @@
             if (modifyInput.length == 1) {
                 modifyInput.remove()
                 btn.text("변경")
+                btn.css("color", "blue")
             } else {
                 btn.text("취소")
+                btn.css("color", "red")
                 const form = $("<form class='member-info-content member-modify'></form>")
                 const input = $("<input type='text'>")
                 const button = $("<button class='btn-modify' onclick='update()'>저장</button>")
