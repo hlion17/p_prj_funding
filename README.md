@@ -33,7 +33,8 @@
 <br>
 
 ### ERD
-![ERD](https://user-images.githubusercontent.com/89788111/173987623-5dbe0165-4c60-43a7-a619-8c985fa71462.png)
+![ERD](https://user-images.githubusercontent.com/89788111/173987838-8c2e0c2a-c983-42b7-85c2-d5f98eed02fc.png)
+
 
 ## 개발 결과
 (업로드 예정)
