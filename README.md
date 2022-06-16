@@ -32,5 +32,8 @@
   - 검증을 통과하지 못하거나 서버측 오류 발생시 결제 취소
 <br>
 
+### ERD
+![ERD](https://user-images.githubusercontent.com/89788111/173987623-5dbe0165-4c60-43a7-a619-8c985fa71462.png)
+
 ## 개발 결과
 (업로드 예정)
