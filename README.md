@@ -9,7 +9,7 @@
 ### 개발환경
 
 - FrontEnd: HTML, CSS, Javascript, jQuery, Bootstrap
-- BackEnd: Tomcat Server 9, Java 1.8, Spring 5.3.18, Mybatis
+- BackEnd: Tomcat Server 9, Java 1.8, SpringBoot 2.6.7, Mybatis
 - Database: Oracle
 - Test: Junit5, Mockito  
 <br>
