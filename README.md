@@ -56,9 +56,11 @@
 - 커뮤니티에서 후기 작성 및 채팅
 ![project-detail1](https://user-images.githubusercontent.com/89788111/174217842-3d081da0-7f1c-4611-b47a-a22f7ad3024c.jpg)
 <br>
-![project-detail2](https://user-images.githubusercontent.com/89788111/174217874-8f4a2b97-012b-49cd-8aaa-c25f90850f69.jpg)
+
+![project-detail2](https://user-images.githubusercontent.com/89788111/174218493-b85fb099-edbb-4c8e-ae56-623a9068ce22.jpg)
 <br>
-![project-chat](https://user-images.githubusercontent.com/89788111/174217894-8a1bc412-18ed-4a1a-b382-257f2db40b59.jpg)
+
+![project-chat](https://user-images.githubusercontent.com/89788111/174218527-a3d68ac6-49ec-4e67-be19-d2b5e7895a2b.jpg)
 <br>
 
 ### 결제 페이지
