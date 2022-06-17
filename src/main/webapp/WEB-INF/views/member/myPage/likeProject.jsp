@@ -111,6 +111,8 @@
     /* 관심 프로젝트 목록 */
     #likeProject-wrapper {
         display: flex;
+        flex-wrap: wrap;
+        width: 1100px;
         margin-top: 20px;
         padding: 20px 0;
     }
@@ -133,7 +135,7 @@
         <c:forEach var="p" items="${list}">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" onclick="location.href='/project/'+${p.projectNo}">
                 <%-- 테스트 영역 --%>
-                <div class="col project-card" data-projectNo="${p.projectNo}">
+                <div class="col project-card" data-projectNo="${p.projectNo}" style="min-height: 500px">
                     <!-- 카드 영역 -->
                     <div class="card shadow-sm card-section">
                         <!-- 카드 이미지 -->

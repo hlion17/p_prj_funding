@@ -42,6 +42,11 @@
             background: rgba(240, 240, 240, 1);
         }
 
+        #top-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0px 5px 5px -8px;
+        }
     </style>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -135,7 +140,7 @@
 
 <!-- header -->
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <nav class="navbar navbar-expand-lg navbar-light" id="top-header">
         <div class="container py-2">
             <a class="navbar-brand" href="/main">크라우드 펀딩</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

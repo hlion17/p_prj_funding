@@ -105,6 +105,11 @@
         $("#support-searchbar > i").click(function () {
             location.href="/myPage/support"
         })
+        // 프로젝트 이동
+        $(".support-box-button").click(function () {
+            const projectNo = $(this).attr("data-projectNo")
+            location.href = "/project/" + projectNo
+        })
     })
 </script>
 
@@ -142,7 +147,7 @@
                     <div>${p.get("paymentTotal")}원 결제 완료</div>
                 </div>
             </div>
-            <div class="support-box-button">
+            <div class="support-box-button" data-projectNo="${p.get("projectNo")}">
                 <div>후기 작성하기</div>
             </div>
         </div>

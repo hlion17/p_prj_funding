@@ -42,8 +42,8 @@
         height: 100vh;
         padding: 20px;
     }
-    main section:nth-child(1) {
-        flex-grow: 1;
+    #intro {
+        width: 60%;
     }
     main #ranking-area {
         width: 40%;
@@ -99,6 +99,31 @@
         height: 100%;
     }
 
+    /*  메인 인트로  */
+    #intro-content {
+        padding: 10px 0;
+    }
+    .intro-section {
+        display: flex;
+    }
+    .intro-section-img > img{
+        width: 350px;
+        height: 500px;
+    }
+    .intro-section-text {
+        padding: 20px;
+    }
+    .intro-section-text > div {
+        margin-bottom: 40px;
+    }
+
+    #btn-project {
+        border: 1px solid cornflowerblue;
+        color: rgb(100 149 237);
+        border-radius: 10px;
+        padding: 5px 10px;
+        background: rgba(100, 150, 230, 0.1);
+    }
 </style>
 
 <script>
@@ -109,45 +134,36 @@
     })
 </script>
 
-<%-- carousel --%>
-<%--<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">--%>
-<%--    <div class="carousel-indicators">--%>
-<%--        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>--%>
-<%--        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>--%>
-<%--        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>--%>
-<%--    </div>--%>
-<%--    <div class="carousel-inner" style="height: 300px">--%>
-<%--        <div class="carousel-item active">--%>
-<%--            <img src="https://source.unsplash.com/800x600/?nature,water" class="d-block w-100" alt="...">--%>
-<%--        </div>--%>
-<%--        <div class="carousel-item">--%>
-<%--            <img src="https://source.unsplash.com/800x600/?nature,summer" class="d-block w-100" alt="...">--%>
-<%--        </div>--%>
-<%--        <div class="carousel-item">--%>
-<%--            <img src="https://source.unsplash.com/800x600/?nature,fall" class="d-block w-100" alt="...">--%>
-<%--        </div>--%>
-<%--    </div>--%>
-<%--    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">--%>
-<%--        <span class="carousel-control-prev-icon" aria-hidden="true"></span>--%>
-<%--        <span class="visually-hidden">Previous</span>--%>
-<%--    </button>--%>
-<%--    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">--%>
-<%--        <span class="carousel-control-next-icon" aria-hidden="true"></span>--%>
-<%--        <span class="visually-hidden">Next</span>--%>
-<%--    </button>--%>
-<%--</div>--%>
-<%--위에 광고성 프로젝트 삽입--%>
-
-
 <main>
-    <section id="test-area">
-        <div><h2>메인에 들어갈 프로젝트 목록</h2></div>
-        <div>
-            메인에 나열할 프로젝트 구상
+    <section id="intro">
+        <div id="intro-header">
+            <h2>여러분들의 꿈을 함께 실현하세요!</h2>
+        </div>
+        <div id="intro-content">
+            <div class="intro-section">
+                <div class="intro-section-img">
+                    <img src="/resources/img/fund-main-img.jpg" alt="">
+                </div>
+                <div class="intro-section-text">
+                    <div>
+                        <h4>아이디어를 표현하세요!</h4>
+                        <p>여러분들이 가지고 있는 무한한 상상력을 프로젝트로 표현해보세요</p>
+                    </div>
+                    <div>
+                        <h4>함께해요!</h4>
+                        <p>마음에 드는 아이디어가 있으면 후원을 통해 창작자를 지원합니다.</p>
+                    </div>
+                    <div>
+                        <h4>보상을 받아보세요!</h4>
+                        <p>창작자는 후원자에게 감사의 의미로 리워드를 제공할 수 있어요!</p>
+                    </div>
+                    <button id="btn-project" onclick="location.href='/project/list'">프로젝트 보러가기&nbsp;&rarr;</button>
+                </div>
+            </div>
         </div>
     </section>
     <section id="ranking-area">
-        <h2>프로젝트 랭킹(좋아요)</h2>
+        <h2>인기 프로젝트</h2>
         <c:forEach var="p" items="${likeRank}" varStatus="r">
         <div class="ranking-box" data-projectNo="${p.projectNo}">
             <div class="rb-rank">${r.index + 1}</div>

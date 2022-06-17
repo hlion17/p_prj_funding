@@ -405,6 +405,7 @@
             </div>
         </div>
         <div id="sticky-holder">
+            <c:if test="${project.projectStep ne 4}">
             <div id="content-right">
                 <p>선물선택</p>
                 <c:forEach var="r" items="${rewards}">
@@ -419,6 +420,7 @@
                 </div>
                 </c:forEach>
             </div>
+            </c:if>
         </div>
     </div>
 </div>
