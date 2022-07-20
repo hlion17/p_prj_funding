@@ -3,10 +3,7 @@ package me.project.funding.unitTest.controller;
 import me.project.funding.controller.MemberController;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.service.face.MemberService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -173,6 +170,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("회원정보 수정")
+    @Disabled
     void update() throws Exception {
         // given
         MemberDTO member = new MemberDTO();

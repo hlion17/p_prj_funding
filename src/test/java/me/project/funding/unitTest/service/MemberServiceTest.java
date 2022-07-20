@@ -5,10 +5,7 @@ import me.project.funding.dto.MemberDTO;
 import me.project.funding.mapper.MemberMapper;
 import me.project.funding.service.face.MemberService;
 import me.project.funding.service.impl.MemberServiceImpl;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -144,6 +141,7 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("회원 정보 업데이트")
+    @Disabled
     void update() {
         // given
         MemberDTO member = this.member;
