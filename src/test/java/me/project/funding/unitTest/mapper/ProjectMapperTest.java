@@ -5,6 +5,7 @@ import me.project.funding.dto.MemberDTO;
 import me.project.funding.dto.ProjectDTO;
 import me.project.funding.mapper.MemberMapper;
 import me.project.funding.mapper.ProjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 @Transactional
 @SpringBootTest
 public class ProjectMapperTest {

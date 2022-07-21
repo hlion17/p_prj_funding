@@ -5,6 +5,7 @@ import me.project.funding.mapper.RewardMapper;
 import me.project.funding.service.face.RewardService;
 import me.project.funding.service.impl.RewardServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class RewardServiceTest {
     @InjectMocks

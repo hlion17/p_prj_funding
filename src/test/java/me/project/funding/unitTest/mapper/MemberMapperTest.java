@@ -4,6 +4,7 @@ import me.project.funding.commons.SHA256Util;
 import me.project.funding.dto.MemberDTO;
 import me.project.funding.mapper.MemberMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 @Transactional
 @SpringBootTest
 public class MemberMapperTest {

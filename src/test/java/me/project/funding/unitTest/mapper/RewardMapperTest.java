@@ -3,6 +3,7 @@ package me.project.funding.unitTest.mapper;
 import me.project.funding.dto.RewardDTO;
 import me.project.funding.mapper.RewardMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 
+@Disabled
 @SpringBootTest
 @Transactional
 public class RewardMapperTest {

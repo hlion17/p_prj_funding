@@ -7,6 +7,7 @@ import me.project.funding.mapper.MemberMapper;
 import me.project.funding.mapper.ProjectMapper;
 import me.project.funding.service.face.ProjectService;
 import me.project.funding.service.impl.ProjectServiceImpl;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class ProjectServiceTest {
 
