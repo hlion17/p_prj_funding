@@ -44,4 +44,4 @@ jobs:
         aws_key_id: ${{ secrets.AWS_ACCESS_KEY }}
         aws_secret_access_key: $${{ secrets.AWS_SECRET_KEY }}
         aws_bucket: hlion0626-bucket
-        source_dir: './target/*.war'
+        source_dir: './target/funding-0.0.2-SNAPSHOT.war'
