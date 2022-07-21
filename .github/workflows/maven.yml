@@ -37,7 +37,7 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: $${{ secrets.AWS_SECRET_KEY }}
-        run: |
-          aws s3 cp \
-            --region ap-northeast-2
-            ./target/*.war s3://hlion0626-bucket
+      run: |
+        aws s3 cp \
+          --region ap-northeast-2
+          ./target/*.war s3://hlion0626-bucket
