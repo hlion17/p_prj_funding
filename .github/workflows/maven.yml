@@ -45,3 +45,5 @@ jobs:
         aws_secret_access_key: $${{ secrets.AWS_SECRET_KEY }}
         aws_bucket: hlion0626-bucket
         source_dir: ./target/*.war
+      run: |
+        echo "경로 확인 $(ls -l ./target)"
