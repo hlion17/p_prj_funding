@@ -52,5 +52,5 @@ jobs:
         aws-region: ap-northeast-2
 
     - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 --acl private ./funding-prj.zip s3://hlion0626-bucket/
+      run: aws s3 cp --region ap-northeast-2 --acl private ./funding-prj.zip s3://hlion0626-bucket/
 
